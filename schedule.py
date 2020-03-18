@@ -4,13 +4,14 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 
 YEAR = int(datetime.now().strftime("%Y"))
+MONTH = int(datetime.now().strftime("%m"))
 
 
 def annual_schedule(year=YEAR):
     return [day for month in range(1, 13) for day in open_days(month, year)]
 
 
-def open_days(month, year):
+def open_days(month=MONTH, year=YEAR):
     base_url = f"https://keiba.yahoo.co.jp/schedule/list/{year}/"
     payload = {"month": str(month)}
     soup = BeautifulSoup(requests.get(base_url, payload).text, "lxml")
