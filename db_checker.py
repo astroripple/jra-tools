@@ -1,5 +1,5 @@
 from horseview.horsemodel import KaisaiData
-import schedule
+from . import schedule
 
 
 def missing_days(year):
@@ -8,8 +8,8 @@ def missing_days(year):
 
 
 def db_days(year):
-    start_date = int("{}0101".format(year))
-    end_date = int("{}1231".format(year))
+    start_date = int(f"{year}0101")
+    end_date = int(f"{year}1231")
     kaisais = KaisaiData.query.filter(
         KaisaiData.ymd >= start_date, KaisaiData.ymd <= end_date
     ).all()
