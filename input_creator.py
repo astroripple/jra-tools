@@ -1,5 +1,5 @@
-﻿import training_tool
-import category_data
+﻿from . import training_tool
+from . import category_data
 import numpy as np
 
 

@@ -1,5 +1,5 @@
 from horseview.horsemodel import KaisaiData
-import schedule
+from . import schedule
 
 
 def missing_days(year):

@@ -1,5 +1,5 @@
 ﻿import numpy as np
-import training_tool
+from . import training_tool
 
 
 class LabelCreator:
