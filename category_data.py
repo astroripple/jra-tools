@@ -1,5 +1,5 @@
 import numpy as np
-from jrdbdummies import CategoryGetter
+from .jrdbdummies import CategoryGetter
 
 
 def getCategoryData(kaisais):
