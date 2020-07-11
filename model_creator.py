@@ -1,9 +1,5 @@
-﻿import keras
-from keras.layers.core import Activation, Dense, Dropout, Flatten
-from keras.layers.noise import GaussianDropout, GaussianNoise
-from keras.layers import Input, Conv1D, merge
-from keras.models import Model
-
+﻿from tensorflow.keras.layers import Activation, Dense, Dropout, Flatten, GaussianDropout, GaussianNoise, Input, Conv1D, concatenate, Add
+from tensorflow.keras import Model
 
 class ModelCreator:
     def __init__(self, num_trait):
@@ -14,14 +10,14 @@ class ModelCreator:
         in_conv_conv = Conv1D(
             filters=128, kernel_size=3, padding="same", activation="selu"
         )(in_conv)
-        merged = keras.layers.add([in_conv_conv, in_conv])
+        merged = Add()([in_conv_conv, in_conv])
         merged = Activation("selu")(merged)
 
         in_conv = Conv1D(filters=128, kernel_size=3, padding="same")(merged)
         in_conv_conv = Conv1D(
             filters=128, kernel_size=3, padding="same", activation="selu"
         )(in_conv)
-        merged = keras.layers.add([in_conv_conv, in_conv])
+        merged = Add()([in_conv_conv, in_conv])
         merged = Activation("selu")(merged)
 
         # 出力層
@@ -51,3 +47,4 @@ class ModelCreator:
             loss="categorical_crossentropy", optimizer="SGD", metrics=["accuracy"]
         )
         self.model = model
+        
