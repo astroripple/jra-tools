@@ -2,6 +2,7 @@ import numpy as np
 from tensorflow.keras.models import Model,load_model
 from .input_creator import InputCreator
 from .label_creator import LabelCreator
+import matplotlib.pyplot as plt
 
 class PerformanceTester:
     def __init__(self, model_name, kaisais):
