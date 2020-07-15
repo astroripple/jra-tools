@@ -109,6 +109,7 @@ class PerformanceTester:
         ax.bar(x - width/2, [v['ret'] / v['bet'] for v in course_recovery.values()], width, label='回収率')
         ax.bar(x + width/2, [v['win'] / v['race_count'] for v in course_recovery.values()], width, label='的中率')
         ax.set_title(title)
+        ax.set_ylabel('rate')
         ax.set_xticks(x)
         ax.set_xticklabels(labels)
         ax.legend()
