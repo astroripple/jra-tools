@@ -6,7 +6,7 @@ from .label_creator import LabelCreator
 class PerformanceTester:
     def __init__(self, model_name, kaisais):
         #モデルのロード
-        self.model = load_model(modelname)
+        self.model = load_model(model_name)
         self.recoveries = get_recoveries(kaisais)
 
     def output_performance():
