@@ -8,7 +8,7 @@ class PerformanceTester:
     def __init__(self, model_name, kaisais):
         self.model = load_model(model_name)
         self.recoveries = self.get_recoveries(kaisais)
-        self.period = f"{self.kaisais[0].ymd} - {self.kaisais[-1].ymd}"
+        self.period = f"{kaisais[0].ymd} - {kaisais[-1].ymd}"
 
     def output_performance(self):
         self.draw_annual_performance(self.get_monthly_recovery(self.recoveries))
