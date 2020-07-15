@@ -7,7 +7,7 @@ class PerformanceTester:
     def __init__(self, model_name, kaisais):
         #モデルのロード
         self.model = load_model(model_name)
-        self.recoveries = get_recoveries(kaisais)
+        self.recoveries = self.get_recoveries(kaisais)
 
     def output_performance():
         draw_annual_performance(get_monthly_recovery(self.recoveries))
