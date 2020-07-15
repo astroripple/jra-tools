@@ -10,8 +10,8 @@ class PerformanceTester:
         self.recoveries = self.get_recoveries(kaisais)
 
     def output_performance(self):
-        draw_annual_performance(get_monthly_recovery(self.recoveries))
-        draw_course_recovery(get_course_recovery(self.recoveries))
+        self.draw_annual_performance(self, get_monthly_recovery(self, self.recoveries))
+        self.draw_course_recovery(self, get_course_recovery(self, self.recoveries))
 
     def get_recoveries(self, kaisais):
         ic = InputCreator(kaisais)
