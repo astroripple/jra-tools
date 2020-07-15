@@ -10,8 +10,8 @@ class PerformanceTester:
         self.recoveries = self.get_recoveries(kaisais)
 
     def output_performance(self):
-        self.draw_annual_performance(self, self.get_monthly_recovery(self.recoveries))
-        self.draw_course_recovery(self, self.get_course_recovery(self.recoveries))
+        self.draw_annual_performance(self.get_monthly_recovery(self.recoveries))
+        self.draw_course_recovery(self.get_course_recovery(self.recoveries))
 
     def get_recoveries(self, kaisais):
         ic = InputCreator(kaisais)
@@ -59,7 +59,7 @@ class PerformanceTester:
                 rate.update(inital)
         return rate
 
-    def draw_annual_performance(self, monthlyRecovery):
+    def draw_annual_performance(monthlyRecovery):
         total_recovery_rate = []
         total_win_rate = []
         title = '月別年間パフォーマンス'
@@ -97,7 +97,7 @@ class PerformanceTester:
                 rate.update(inital)
         return rate
 
-    def draw_course_recovery(self, course_recovery):
+    def draw_course_recovery(course_recovery):
         title = 'コース別年間パフォーマンス'
         fig, ax = plt.subplots()
 
