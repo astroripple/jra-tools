@@ -39,7 +39,7 @@ class PerformanceTester:
 
         return results
 
-    def get_monthly_recovery(recoveries):
+    def get_monthly_recovery(self, recoveries):
         rate = {}
         for recovery in recoveries:
             if str(recovery['ymd'])[:6] in rate:
@@ -59,7 +59,7 @@ class PerformanceTester:
                 rate.update(inital)
         return rate
 
-    def draw_annual_performance(monthlyRecovery):
+    def draw_annual_performance(self, monthlyRecovery):
         total_recovery_rate = []
         total_win_rate = []
         title = '月別年間パフォーマンス'
@@ -77,7 +77,7 @@ class PerformanceTester:
         ax.legend()    
         fig.savefig(f"{title}.svg")
 
-    def get_course_recovery(recoveries):
+    def get_course_recovery(self, recoveries):
         rate = {}
         for recovery in recoveries:
             if recovery['course'] in rate:
@@ -97,7 +97,7 @@ class PerformanceTester:
                 rate.update(inital)
         return rate
 
-    def draw_course_recovery(course_recovery):
+    def draw_course_recovery(self, course_recovery):
         title = 'コース別年間パフォーマンス'
         fig, ax = plt.subplots()
 
