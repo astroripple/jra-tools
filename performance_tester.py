@@ -63,7 +63,7 @@ class PerformanceTester:
     def draw_annual_performance(self, monthlyRecovery):
         total_recovery_rate = []
         total_win_rate = []
-        title = '月別年間パフォーマンス'
+        title = f'月別パフォーマンス({self.kaisais[0].ymd} - {self.kaisais[-1].ymd})'
         for v in monthlyRecovery.values():
             total_recovery_rate.append(v["ret"] / v["bet"])
             total_win_rate.append(v["win"] / v["race_count"])
@@ -99,7 +99,7 @@ class PerformanceTester:
         return rate
 
     def draw_course_recovery(self, course_recovery):
-        title = 'コース別年間パフォーマンス'
+        title = f'コース別パフォーマンス ({self.kaisais[0].ymd} - {self.kaisais[-1].ymd})'
         fig, ax = plt.subplots()
 
         labels = [v for v in course_recovery.keys()]
