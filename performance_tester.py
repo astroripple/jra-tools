@@ -10,8 +10,8 @@ class PerformanceTester:
         self.recoveries = self.get_recoveries(kaisais)
 
     def output_performance(self):
-        self.draw_annual_performance(self, self.get_monthly_recovery(self, self.recoveries))
-        self.draw_course_recovery(self, self.get_course_recovery(self, self.recoveries))
+        self.draw_annual_performance(self, self.get_monthly_recovery(self.recoveries))
+        self.draw_course_recovery(self, self.get_course_recovery(self.recoveries))
 
     def get_recoveries(self, kaisais):
         ic = InputCreator(kaisais)
@@ -39,7 +39,7 @@ class PerformanceTester:
 
         return results
 
-    def get_monthly_recovery(self, recoveries):
+    def get_monthly_recovery(recoveries):
         rate = {}
         for recovery in recoveries:
             if str(recovery['ymd'])[:6] in rate:
@@ -77,7 +77,7 @@ class PerformanceTester:
         ax.legend()    
         fig.savefig(f"{title}.svg")
 
-    def get_course_recovery(self, recoveries):
+    def get_course_recovery(recoveries):
         rate = {}
         for recovery in recoveries:
             if recovery['course'] in rate:
