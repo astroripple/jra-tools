@@ -69,11 +69,6 @@ class PerformanceTester:
         ax.plot([i for i in range(1, 13)], recovery_rates, label='Recovery')
         ax.plot([i for i in range(1, 13)], win_rates, label='Win')
 
-        ret_mean = sum([v['ret'] for v in course_recovery.values()])/ sum([v['bet'] for v in course_recovery.values()])
-        win_mean = sum([v['win'] for v in course_recovery.values()])/ sum([v['race_count'] for v in course_recovery.values()])
-        ax.axhline(ret_mean, color='blue', linewidth=2, linestyle=':')
-        ax.axhline(win_mean, color='orange', linewidth=2, linestyle=':')
-
         ax.set_title(title)
         ax.set_ylabel('rate')
         ax.set_xlim(1, 12)
@@ -104,6 +99,11 @@ class PerformanceTester:
     def draw_course_recovery(self, course_recovery):
         title = f'コース別パフォーマンス ({self.period})'
         fig, ax = plt.subplots()
+
+        ret_mean = sum([v['ret'] for v in course_recovery.values()])/ sum([v['bet'] for v in course_recovery.values()])
+        win_mean = sum([v['win'] for v in course_recovery.values()])/ sum([v['race_count'] for v in course_recovery.values()])
+        ax.axhline(ret_mean, color='blue', linewidth=2, linestyle=':')
+        ax.axhline(win_mean, color='orange', linewidth=2, linestyle=':')
 
         labels = [v for v in course_recovery.keys()]
         x = np.arange(len(labels))
