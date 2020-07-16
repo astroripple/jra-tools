@@ -1,5 +1,6 @@
 import numpy as np
 from tensorflow.keras.models import Model,load_model
+from tensorflow.keras.utils import plot_model
 from .input_creator import InputCreator
 from .label_creator import LabelCreator
 import matplotlib.pyplot as plt
@@ -7,12 +8,16 @@ import matplotlib.pyplot as plt
 class PerformanceTester:
     def __init__(self, model_name, kaisais):
         self.model = load_model(model_name)
+        self.model_name = model_name
         self.recoveries = self.get_recoveries(kaisais)
         self.period = f"{kaisais[0].ymd} - {kaisais[-1].ymd}"
 
     def output_performance(self):
         self.draw_annual_performance(self.get_monthly_recovery(self.recoveries))
         self.draw_course_recovery(self.get_course_recovery(self.recoveries))
+
+    def draw_model(self):
+        plot_model(self.model, to_file=f'{self.model_name}.png')
 
     def get_recoveries(self, kaisais):
         ic = InputCreator(kaisais)
