@@ -61,16 +61,19 @@ class PerformanceTester:
         return rate
 
     def draw_annual_performance(self, monthlyRecovery):
-        total_recovery_rate = []
-        total_win_rate = []
         title = f'月別パフォーマンス({self.period})'
-        for v in monthlyRecovery.values():
-            total_recovery_rate.append(v["ret"] / v["bet"])
-            total_win_rate.append(v["win"] / v["race_count"])
-        
+
+        recovery_rates = [ v["ret"] / v["bet"] for v in monthlyRecovery.values()]
+        win_rates = [ v["win"] / v["race_count"] for v in monthlyRecovery.values()]
         fig, ax = plt.subplots()
-        ax.plot([i for i in range(1, 13)], total_recovery_rate, label='Recovery')
-        ax.plot([i for i in range(1, 13)], total_win_rate, label='Win')
+        ax.plot([i for i in range(1, 13)], recovery_rates, label='Recovery')
+        ax.plot([i for i in range(1, 13)], win_rates, label='Win')
+
+        ret_mean = sum([v['ret'] for v in course_recovery.values()])/ sum([v['bet'] for v in course_recovery.values()])
+        win_mean = sum([v['win'] for v in course_recovery.values()])/ sum([v['race_count'] for v in course_recovery.values()])
+        ax.axhline(ret_mean, color='blue', linewidth=2, linestyle=':')
+        ax.axhline(win_mean, color='orange', linewidth=2, linestyle=':')
+
         ax.set_title(title)
         ax.set_ylabel('rate')
         ax.set_xlim(1, 12)
