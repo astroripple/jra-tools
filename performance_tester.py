@@ -23,12 +23,15 @@ class PerformanceTester:
     def __init__(self, model_name, kaisais):
         self.model = load_model(model_name)
         self.model_name = model_name
+        self.kaisais = kaisais
         self.recoveries = self.get_recoveries(kaisais)
         self.period = f"{kaisais[0].ymd} - {kaisais[-1].ymd}"
 
     def output_performance(self):
         self.draw_annual_performance(self.get_monthly_recovery(self.recoveries))
         self.draw_course_recovery(self.get_course_recovery(self.recoveries))
+        self.draw_cond_win_rates(self.kaisais)
+        self.draw_cond_recovery_rates(self.kaisais)
 
     def draw_model(self):
         plot_model(self.model, to_file=f'{self.model_name}.png')
@@ -200,6 +203,21 @@ class PerformanceTester:
 
         ax.set_title(title)
         ax.set_ylabel('Win Rate')
+        ax.set_xlim(1, 12)
+        ax.set_xlabel('Month')
+        ax.legend()    
+        fig.savefig(f"{title}.svg")
+
+    def draw_cond_recovery_rates(self, kaisais):
+        joken_recovery = self.get_joken_recovery(kaisais)
+        title = '月別一番手評価馬回収率'
+        fig, ax = plt.subplots()
+        for cond in ['A1', 'A3', '05', '10', '16', 'OP']:
+            win_rates = self.get_recovery_rate(joken_recovery, cond)
+            ax.plot([i for i in range(1, 13)], win_rates, label=f"{self.CONDS[cond]}")
+
+        ax.set_title(title)
+        ax.set_ylabel('Recovery Rate')
         ax.set_xlim(1, 12)
         ax.set_xlabel('Month')
         ax.legend()    
