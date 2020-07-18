@@ -34,11 +34,11 @@ class PerformanceTester:
         for race in kaisai.races:
             icchaku = np.argsort(preds[0][cnt])[::-1]
             w_icchaku = icchaku[0]
-            cnt += 1
             bet += 100
             if w_icchaku == np.argmax(lc.t_icchaku[cnt]):
                 win += 1
                 ret += race.returninfo.win1_ret
+            cnt += 1
         return {"ymd": kaisai.ymd, "course": kaisai.course_name, "race_count": cnt, "win": win, "bet": bet, "ret": ret}
         
 
