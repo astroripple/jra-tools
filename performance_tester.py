@@ -213,8 +213,8 @@ class PerformanceTester:
         title = '月別一番手評価馬回収率'
         fig, ax = plt.subplots()
         for cond in ['A1', 'A3', '05', '10', '16', 'OP']:
-            win_rates = self.get_recovery_rate(joken_recovery, cond)
-            ax.plot([i for i in range(1, 13)], win_rates, label=f"{self.CONDS[cond]}")
+            recovery_rates = self.get_recovery_rate(joken_recovery, cond)
+            ax.plot([i for i in range(1, 13)], recovery_rates, label=f"{self.CONDS[cond]}")
 
         ax.set_title(title)
         ax.set_ylabel('Recovery Rate')
