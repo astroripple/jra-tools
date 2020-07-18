@@ -6,6 +6,20 @@ from .label_creator import LabelCreator
 import matplotlib.pyplot as plt
 
 class PerformanceTester:
+    CONDS = {
+        '04': '1勝クラス',
+        '05': '1勝クラス',  
+        '08': '2勝クラス',  
+        '09': '2勝クラス',
+        '10': '2勝クラス',
+        '15': '3勝クラス',
+        '16': '3勝クラス',
+        'A1': '新馬',
+        'A2': '未出走',
+        'A3': '未勝利',
+        'OP': 'オープン',
+    }
+
     def __init__(self, model_name, kaisais):
         self.model = load_model(model_name)
         self.model_name = model_name
@@ -143,3 +157,50 @@ class PerformanceTester:
 
     def get_kaisais_recoveries(self, kaisais):
         return [self.get_race_recoveries(kaisai) for kaisai in kaisais]
+
+    def get_joken_recovery(self, kaisais):
+        kaisais_recoveries = self.get_kaisais_recoveries(kaisais)
+        rate = {}
+        for kaisai_recoveries in kaisais_recoveries:
+            for r in kaisai_recoveries:
+                month = str(r["ymd"])[:6]
+                if month in rate:
+                    if r['joken'] in rate[month]:
+                        rate[month][r['joken']]['count'] += 1
+                        rate[month][r['joken']]['win'] += r["win"]
+                        rate[month][r['joken']]['bet'] += 100
+                        rate[month][r['joken']]['ret'] += r["ret"]
+                    else:
+                        rate[month].update({ r['joken']: {'count': 1, 'win': r['win'], 'bet': 100, 'ret': r['ret']} })
+                else:
+                    rate.update({ month: { r['joken']: {'count': 1, 'win': r['win'], 'bet': 100, 'ret': r['ret']} } })
+        return rate
+
+    def get_win_rate(self, joken_recovery, cond):
+        results = []
+        for month in joken_recovery.keys():
+            result = joken_recovery[month].get(cond, 0)
+            results.append(result['win']/result['count'] if result != 0 else 0)
+        return results
+
+    def get_recovery_rate(self, joken_recovery, cond):
+        results = []
+        for month in joken_recovery.keys():
+            result = joken_recovery[month].get(cond, 0)
+            results.append(result['ret']/result['bet'] if result != 0 else 0)
+        return results
+
+    def draw_cond_win_rates(self, kaisais):
+        joken_recovery = self.get_joken_recovery(kaisais)
+        title = '月別一番手評価馬的中率'
+        fig, ax = plt.subplots()
+        for cond in ['A1', 'A3', '05', '10', '16', 'OP']:
+            win_rates = self.get_win_rate(joken_recovery, cond)
+            ax.plot([i for i in range(1, 13)], win_rates, label=f"{self.CONDS[cond]}")
+
+        ax.set_title(title)
+        ax.set_ylabel('Win Rate')
+        ax.set_xlim(1, 12)
+        ax.set_xlabel('Month')
+        ax.legend()    
+        fig.savefig(f"{title}.svg")
