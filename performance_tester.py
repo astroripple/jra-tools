@@ -20,30 +20,27 @@ class PerformanceTester:
         plot_model(self.model, to_file=f'{self.model_name}.png')
 
     def get_recoveries(self, kaisais):
-        ic = InputCreator(kaisais)
-        lc = LabelCreator(kaisais)    
+        return [self.get_kaisai_recovery(kaisai) for kaisai in kaisais]
+
+    def get_kaisai_recovery(self, kaisai):
+        ic = InputCreator([kaisais])
+        lc = LabelCreator([kaisais])
         preds = self.model.predict(ic.x_data)
 
-        w = 0
-        results = []
+        cnt = 0
+        win = 0
+        bet = 0
+        ret = 0
+        for race in kaisai.races:
+            icchaku = np.argsort(preds[0][cnt])[::-1]
+            w_icchaku = icchaku[0]
+            cnt += 1
+            bet += 100
+            if w_icchaku == np.argmax(lc.t_icchaku[cnt]):
+                win += 1
+                ret += race.returninfo.win1_ret
+        return {"ymd": kaisai.ymd, "course": kaisai.course_name, "race_count": cnt, "win": win, "bet": bet, "ret": ret}
         
-        for kaisai in kaisais:
-            cnt = 0
-            win = 0
-            bet = 0
-            ret = 0
-            for race in kaisai.races:
-                icchaku = np.argsort(preds[0][w])[::-1]
-                w_icchaku = icchaku[0]
-                cnt += 1
-                bet += 100
-                if w_icchaku == np.argmax(lc.t_icchaku[w]):
-                    win += 1
-                    ret += race.returninfo.win1_ret
-                w += 1
-            results.append({"ymd": kaisai.ymd, "course": kaisai.course_name, "race_count": cnt, "win": win, "bet": bet, "ret": ret})
-
-        return results
 
     def get_monthly_recovery(self, recoveries):
         rate = {}
