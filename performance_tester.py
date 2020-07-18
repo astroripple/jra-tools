@@ -119,3 +119,27 @@ class PerformanceTester:
         ax.set_xticklabels(labels)
         ax.legend()
         fig.savefig(f"{title}.svg")
+
+    def get_race_recoveries(self, kaisai):
+        ic = InputCreator([kaisai])
+        lc = LabelCreator([kaisai])
+        preds = self.model.predict(ic.x_data)
+
+        cnt = 0
+        recoveries = []
+        for race in kaisai.races:
+            win = 0
+            bet = 0
+            ret = 0
+            icchaku = np.argsort(preds[0][cnt])[::-1]
+            w_icchaku = icchaku[0]
+            bet += 100
+            if w_icchaku == np.argmax(lc.t_icchaku[cnt]):
+                win += 1
+                ret += race.returninfo.win1_ret
+            recoveries.append({"ymd": kaisai.ymd, "course": kaisai.course_name, "shubetsu": race.shubetsu, "joken": race.joken, "win": win, "bet": bet, "ret": ret})
+            cnt += 1
+        return recoveries
+
+    def get_kaisais_recoveries(self, kaisais):
+        return [self.get_race_recoveries(kaisai) for kaisai in kaisais]
