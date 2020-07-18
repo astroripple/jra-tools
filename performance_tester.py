@@ -23,8 +23,8 @@ class PerformanceTester:
         return [self.get_kaisai_recovery(kaisai) for kaisai in kaisais]
 
     def get_kaisai_recovery(self, kaisai):
-        ic = InputCreator([kaisais])
-        lc = LabelCreator([kaisais])
+        ic = InputCreator([kaisai])
+        lc = LabelCreator([kaisai])
         preds = self.model.predict(ic.x_data)
 
         cnt = 0
