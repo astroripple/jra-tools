@@ -195,7 +195,7 @@ class PerformanceTester:
 
     def draw_cond_win_rates(self, kaisais):
         joken_recovery = self.get_joken_recovery(kaisais)
-        title = '月別一番手評価馬的中率'
+        title = f'月別一番手評価馬的中率({self.period})'
         fig, ax = plt.subplots()
         for cond in ['A1', 'A3', '05', '10', '16', 'OP']:
             win_rates = self.get_win_rate(joken_recovery, cond)
@@ -210,7 +210,7 @@ class PerformanceTester:
 
     def draw_cond_recovery_rates(self, kaisais):
         joken_recovery = self.get_joken_recovery(kaisais)
-        title = '月別一番手評価馬回収率'
+        title = f'月別一番手評価馬回収率({self.period})'
         fig, ax = plt.subplots()
         for cond in ['A1', 'A3', '05', '10', '16', 'OP']:
             recovery_rates = self.get_recovery_rate(joken_recovery, cond)
