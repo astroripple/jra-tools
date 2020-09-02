@@ -5,7 +5,15 @@ class ModelCreator:
     def __init__(self, num_trait):
         in_ = Input((18, num_trait))
         merged = Conv1D(filters=128, kernel_size=1, padding="same")(in_)
+        merged = GaussianNoise(.5)(in_)
 
+        in_conv = Conv1D(filters=128, kernel_size=3, padding="same")(merged)
+        in_conv_conv = Conv1D(
+            filters=128, kernel_size=3, padding="same", activation="selu"
+        )(in_conv)
+        merged = Add()([in_conv_conv, in_conv])
+        merged = Activation("selu")(merged)
+        
         in_conv = Conv1D(filters=128, kernel_size=3, padding="same")(merged)
         in_conv_conv = Conv1D(
             filters=128, kernel_size=3, padding="same", activation="selu"
@@ -19,6 +27,14 @@ class ModelCreator:
         )(in_conv)
         merged = Add()([in_conv_conv, in_conv])
         merged = Activation("selu")(merged)
+       
+        in_conv = Conv1D(filters=128, kernel_size=3, padding="same")(merged)
+        in_conv_conv = Conv1D(
+            filters=128, kernel_size=3, padding="same", activation="selu"
+        )(in_conv)
+        merged = Add()([in_conv_conv, in_conv])
+        merged = Activation("selu")(merged)
+        merged = Dropout(.5)(merged)
 
         # 出力層
         out1 = Conv1D(filters=1, kernel_size=1)(merged)
