@@ -83,7 +83,7 @@ def _addKaisaiScores(scores, kaisai):
 
 
 def _addHorseScores(scores, horse):
-    return scores + [
+    horseScores = [
         horse.idm,
         horse.jockey_score,
         horse.info_score,
@@ -148,3 +148,8 @@ def _addHorseScores(scores, horse):
         horse.trainoikiri.end_f_score,
         horse.trainoikiri.oikiri_score,
     ]
+    return scores + _filterStringToInt(horseScores)
+
+
+def _filterStringToInt(scores):
+    return [ 0 if type(score) is str else score for score in scores ]
