@@ -40,8 +40,12 @@ def _getCategory(kaisai, race, horse):
             cg.getBacode(horse.bacode),
             cg.getNum(horse.num),
             cg.getWaku(horse.waku),
-            cg.getTorikeshi(horse.torikeshi),
+            cg.getTorikeshi(_filterStrToInt(horse.torikeshi)),
             cg.getBanushikaicode(horse.banushikai_code),
-            cg.getTraintype(horse.trainanalysis.train_type),
+            cg.getTraintype(_filterStrToInt(horse.trainanalysis.train_type)),
         )
     )
+
+
+def _filterStrToInt(e):
+    return 0 if type(e) is str else e
