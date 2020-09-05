@@ -41,7 +41,7 @@ def _getCategory(kaisai, race, horse):
             cg.getNum(horse.num),
             cg.getWaku(horse.waku),
             cg.getTorikeshi(_filterStrToInt(horse.torikeshi)),
-            cg.getBanushikaicode(horse.banushikai_code),
+            cg.getBanushikaicode(_filterStrToInt(horse.banushikai_code)),
             cg.getTraintype(_filterStrToInt(horse.trainanalysis.train_type)),
         )
     )
