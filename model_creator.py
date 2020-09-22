@@ -20,13 +20,6 @@ class ModelCreator:
         )(in_conv)
         merged = Add()([in_conv_conv, in_conv])
         merged = Activation("selu")(merged)
-
-        in_conv = Conv1D(filters=128, kernel_size=3, padding="same")(merged)
-        in_conv_conv = Conv1D(
-            filters=128, kernel_size=3, padding="same", activation="selu"
-        )(in_conv)
-        merged = Add()([in_conv_conv, in_conv])
-        merged = Activation("selu")(merged)
        
         in_conv = Conv1D(filters=128, kernel_size=3, padding="same")(merged)
         in_conv_conv = Conv1D(
