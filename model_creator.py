@@ -4,15 +4,16 @@ from tensorflow.keras import Model
 class ModelCreator:
     def __init__(self, num_trait):
         in_ = Input((18, num_trait))
-        merged = Conv1D(filters=128, kernel_size=1, padding="same")(in_)
+        out = GaussianNoise(.5)(in_)
+        out = Conv1D(filters=128, kernel_size=1, padding="same")(out)
 
-        merged = self.middle_layer(merged)
-        merged = self.middle_layer(merged)
-        merged = self.middle_layer(merged)
-        merged = Dropout(.5)(merged)
+        out = self.middle_layer(out)
+        out = self.middle_layer(out)
+        out = self.middle_layer(out)
+        out = Dropout(.5)(out)
 
         # 出力層
-        output_layers = [self.output_layer(merged) for i in range(5)]
+        output_layers = [self.output_layer(out) for i in range(5)]
 
         # コンパイル
         model = Model(inputs=in_, outputs=output_layers)
