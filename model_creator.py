@@ -10,6 +10,7 @@ class ModelCreator:
         out = self.middle_layer(out)
         out = self.middle_layer(out)
         out = self.middle_layer(out)
+        out = self.middle_layer(out)
         out = Dropout(.5)(out)
 
         # 出力層
