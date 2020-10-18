@@ -1,17 +1,29 @@
-﻿from tensorflow.keras.layers import Activation, Dense, Dropout, Flatten, GaussianDropout, GaussianNoise, Input, Conv1D, concatenate, Add
+﻿from tensorflow.keras.layers import (
+    Activation,
+    Dense,
+    Dropout,
+    Flatten,
+    GaussianDropout,
+    GaussianNoise,
+    Input,
+    Conv1D,
+    concatenate,
+    Add,
+)
 from tensorflow.keras import Model
+
 
 class ModelCreator:
     def __init__(self, num_trait):
         in_ = Input((18, num_trait))
-        out = GaussianNoise(.5)(in_)
+        out = GaussianNoise(0.5)(in_)
         out = Conv1D(filters=128, kernel_size=1, padding="same")(out)
 
         out = self.middle_layer(out)
         out = self.middle_layer(out)
         out = self.middle_layer(out)
         out = self.middle_layer(out)
-        out = Dropout(.5)(out)
+        out = Dropout(0.5)(out)
 
         # 出力層
         output_layers = [self.output_layer(out) for i in range(5)]
@@ -35,4 +47,3 @@ class ModelCreator:
         )(in_conv)
         merged = Add()([in_conv_conv, in_conv])
         return Activation("selu")(merged)
-        

@@ -152,4 +152,4 @@ def _addHorseScores(scores, horse):
 
 
 def _filterStringToInt(scores):
-    return [ 0 if type(score) is str else score for score in scores ]
+    return [0 if type(score) is str else score for score in scores]
