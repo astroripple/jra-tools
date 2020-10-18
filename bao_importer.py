@@ -1,4 +1,4 @@
-from horseview.horsemodel import sesobj, UmarenOddsData
+from horseview.horsemodel import sesobj, UmarenOddsData, WideOddsData
 import csv
 
 
@@ -64,7 +64,7 @@ class BaoImporter:
             for row in reader:
                 racekey = self.convertRaceCodeToRaceKey(str(int(float(row[2]))))
                 if racekey:
-                    odd = UmarenOddsData()
+                    odd = UmarenOddsData() if "umaren" in fileName else WideOddsData()
                     odd.racekey = racekey
                     odd.data_kbn = row[0]
                     odd.registered_horses = row[4]
