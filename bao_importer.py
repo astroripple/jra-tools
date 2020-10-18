@@ -61,7 +61,7 @@ class BaoImporter:
                         registered_horses=row[4],
                         ran_horses=row[5],
                         sold_flg=row[6],
-                        all_odds=getOdds(row[7].split()),
+                        all_odds=self.getUmarenOdds(row[7].split()),
                         all_estimated_odds=row[8],
                         sum_of_all_bought_count=row[9]
                     )
