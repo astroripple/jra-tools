@@ -1,4 +1,5 @@
 from horseview.horsemodel import sesobj, UmarenOddsData
+import csv
 
 class BaoImporter:
     def __init__(self, kaisais):
