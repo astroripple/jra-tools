@@ -46,14 +46,16 @@ class BaoImporter:
                 odds_dict.update({f'{i+1}-{i+int((j+6)/6)+1}': int(odd_str[j:j+6])/10})
         return odds_dict
 
+    def convertRaceCodeToRaceKey(self, raceCode):
+        bao_info = self.getBaoCodeInfo(raceCode)
+        return self.getRaceKey(bao_info)
+
     def importUmarenCsv(self):
         with open('umaren_odds.csv') as f:
             reader = csv.reader(f)
             header = next(reader)
             for row in reader:
-                race_code = str(int(float(row[2])))
-                bao_info = self.getBaoCodeInfo(race_code)
-                racekey = self.getRaceKey(bao_info)
+                racekey = self.convertRaceCodeToRaceKey(str(int(float(row[2]))))
                 if racekey:
                     odd = UmarenOddsData(
                         racekey=racekey,
