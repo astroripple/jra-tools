@@ -23,8 +23,8 @@ class BaoImporter:
         return kaisaikey[0:2]
 
     def getRaceKey(self, bao_info):
-        if self.kaisaikeys[0]["ymd"] <= bao_info["ymd"] <= kaisaikeys[-1]["ymd"]:
-            for key in kaisaikeys:
+        if self.kaisaikeys[0]["ymd"] <= bao_info["ymd"] <= self.kaisaikeys[-1]["ymd"]:
+            for key in self.kaisaikeys:
                 if key["ymd"] == bao_info["ymd"] and key["course"] == bao_info["bacode"]:
                     return key["key"] + bao_info["no"]
 
