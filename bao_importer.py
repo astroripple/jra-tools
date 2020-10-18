@@ -52,8 +52,8 @@ class BaoImporter:
             header = next(reader)
             for row in reader:
                 race_code = str(int(float(row[2])))
-                bao_info = getBaoCodeInfo(race_code)
-                racekey = getRaceKey(bao_info)
+                bao_info = self.getBaoCodeInfo(race_code)
+                racekey = self.getRaceKey(bao_info)
                 if racekey:
                     odd = UmarenOddsData(
                         racekey=racekey,
