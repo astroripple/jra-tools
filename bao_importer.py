@@ -53,6 +53,15 @@ class BaoImporter:
                 )
         return odds_dict
 
+    def getWideOdds(odds):
+        odds_dict = {}
+        for i, odd_str in enumerate(odds):
+            for j in range(0, len(odd_str), 10):
+                odds_dict.update(
+                    {f"{i+1}-{i+int((j+10)/10)+1}": {"min": int(odd_str[j : j + 5]) / 10, "max": int(odd_str[j + 5 : j + 10]) / 10}}
+                )
+        return odds_dict
+
     def convertRaceCodeToRaceKey(self, raceCode):
         bao_info = self.getBaoCodeInfo(raceCode)
         return self.getRaceKey(bao_info)
@@ -70,7 +79,7 @@ class BaoImporter:
                     odd.registered_horses = row[4]
                     odd.ran_horses = row[5]
                     odd.sold_flg = row[6]
-                    odd.all_odds = self.getUmarenOdds(row[7].split())
+                    odd.all_odds = self.getUmarenOdds(row[7].split()) if "umaren" in fileName else self.getWideOdds(row[7].split())
                     odd.all_estimated_odds = row[8]
                     odd.sum_of_all_bought_count = row[9]
                     sesobj.add(odd)
