@@ -53,7 +53,7 @@ class BaoImporter:
                 )
         return odds_dict
 
-    def getWideOdds(odds):
+    def getWideOdds(self, odds):
         odds_dict = {}
         for i, odd_str in enumerate(odds):
             for j in range(0, len(odd_str), 10):
