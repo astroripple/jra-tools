@@ -67,6 +67,17 @@ class BaoImporter:
                 )
         return odds_dict
 
+    def getWakurenOdds(self, odds_str):
+        odds_dict = {}
+        pos = 0
+        for i in range(8):
+            for j in range(i, 8):
+                odd = odds_str[pos : pos + 5].strip()
+                odd = int(odd)/10 if odd else None
+                odds_dict.update({f"{i+1}-{j+1}": odd})
+                pos+=5
+        return odds_dict
+
     def convertRaceCodeToRaceKey(self, raceCode):
         bao_info = self.getBaoCodeInfo(raceCode)
         return self.getRaceKey(bao_info)
@@ -108,7 +119,7 @@ class BaoImporter:
                     odd.registered_horses = row[4]
                     odd.ran_horses = row[5]
                     odd.sold_flg = row[8]
-                    odd.all_odds = (self.getUmarenOdds(row[12].split()))
+                    odd.all_odds = self.getWakurenOdds(row[12])
                     odd.all_estimated_odds = row[16]
                     odd.sum_of_all_bought_count = row[15]
                     sesobj.add(odd)
