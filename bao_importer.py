@@ -1,4 +1,4 @@
-from horseview.horsemodel import sesobj, UmarenOddsData, WideOddsData
+from horseview.horsemodel import sesobj, UmarenOddsData, WideOddsData, WakurenOddsData
 import csv
 
 
@@ -91,5 +91,25 @@ class BaoImporter:
                     )
                     odd.all_estimated_odds = row[8]
                     odd.sum_of_all_bought_count = row[9]
+                    sesobj.add(odd)
+            sesobj.commit()
+
+
+    def importWakurenCsv(self, fileName):
+        with open(fileName) as f:
+            reader = csv.reader(f)
+            header = next(reader)
+            for row in reader:
+                racekey = self.convertRaceCodeToRaceKey(str(int(float(row[2]))))
+                if racekey:
+                    odd = WakurenOddsData()
+                    odd.racekey = racekey
+                    odd.data_kbn = row[0]
+                    odd.registered_horses = row[4]
+                    odd.ran_horses = row[5]
+                    odd.sold_flg = row[8]
+                    odd.all_odds = (self.getUmarenOdds(row[12].split()))
+                    odd.all_estimated_odds = row[16]
+                    odd.sum_of_all_bought_count = row[15]
                     sesobj.add(odd)
             sesobj.commit()
