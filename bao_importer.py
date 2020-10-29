@@ -73,9 +73,9 @@ class BaoImporter:
         for i in range(8):
             for j in range(i, 8):
                 odd = odds_str[pos : pos + 5].strip()
-                odd = int(odd)/10 if odd else None
+                odd = int(odd) / 10 if odd else None
                 odds_dict.update({f"{i+1}-{j+1}": odd})
-                pos+=5
+                pos += 5
         return odds_dict
 
     def convertRaceCodeToRaceKey(self, raceCode):
@@ -104,7 +104,6 @@ class BaoImporter:
                     odd.sum_of_all_bought_count = row[9]
                     sesobj.add(odd)
             sesobj.commit()
-
 
     def importWakurenCsv(self, fileName):
         with open(fileName) as f:
