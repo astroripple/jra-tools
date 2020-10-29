@@ -3,10 +3,10 @@ from horseview.horsemodel import sesobj, PredictRaceData
 
 class PredictRaceUpdater:
     def update(self, kaisais):
-        for k in kaisais:
-            for r in raisai.races:
+        for kaisai in kaisais:
+            for race in kaisai.races:
                 pred = PredictRaceData(
-                    racekey=r.racekey,
+                    racekey=race.racekey,
                     umaren=self.umarenOddses(race),
                     wide=self.wideOddses(race),
                     wakuren=self.wakurenOddses(race),
