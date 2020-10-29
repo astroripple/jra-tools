@@ -15,14 +15,7 @@ class PredictRaceUpdater:
         sesobj.commit()
 
     def umarenOddses(self, race):
-        odds_dict = {}
-        for i, horse1 in enumrate(race.racehorses):
-            for j in range(i + 1, len(race.racehorses)):
-                horse2 = race.racehorses[j]
-                odds_dict.update(
-                    {f"{horse1.num}-{horse2.num}": self.umarenOdds(horse1, horse2)}
-                )
-        return odds_dict
+        return self.oddses(race, "umaren")
 
     def umarenOdds(self, horse1, horse2):
         p = (
@@ -32,14 +25,7 @@ class PredictRaceUpdater:
         return 1 / p
 
     def wideOddses(self, race):
-        odds_dict = {}
-        for i, horse1 in enumrate(race.racehorses):
-            for j in range(i + 1, len(race.racehorses)):
-                horse2 = race.racehorses[j]
-                odds_dict.update(
-                    {f"{horse1.num}-{horse2.num}": self.wideOdds(horse1, horse2)}
-                )
-        return odds_dict
+        return self.oddses(race, "wide")
 
     def oddses(self, race, baken):
         odds_dict = {}
