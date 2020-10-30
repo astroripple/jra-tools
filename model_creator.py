@@ -41,9 +41,8 @@ class ModelCreator:
         return Activation("softmax")(out)
 
     def middle_layer(self, input_layer):
-        in_conv = Conv1D(filters=128, kernel_size=3, padding="same")(input_layer)
+        in_conv = Conv1D(filters=64, kernel_size=3, padding="same", activation="selu")(input_layer)
         in_conv_conv = Conv1D(
-            filters=128, kernel_size=3, padding="same", activation="selu"
-        )(in_conv)
-        merged = Add()([in_conv_conv, in_conv])
+            filters=64, kernel_size=3, padding="same")(in_conv)
+        merged = Add()([in_conv_conv, input_layer])
         return Activation("selu")(merged)
