@@ -10,7 +10,7 @@ class PredictRaceUpdater:
         inputData = InputCreator(self.kaisais)
         preds = model.predict(inputData.x_data)
         w = 0
-        for k in kaisais:
+        for k in self.kaisais:
             for r in k.races:
                 for h in r.racehorses:
                     hn = h.num - 1
