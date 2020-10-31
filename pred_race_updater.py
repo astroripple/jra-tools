@@ -106,6 +106,8 @@ class PredictRaceUpdater:
             return self.wakurenSameOdds(horses1)
         horses2 = [horse for horse in race.racehorses if horse.waku == gate2]
         pp = 0
+        if len(horses1) == 0 or len(horses2) == 0:
+            return 0
         for horse1 in horses1:
             for horse2 in horses2:
                 pp += 1 / self.umarenOdds(horse1, horse2)
