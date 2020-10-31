@@ -11,10 +11,11 @@ def draw_train_results(history):
     """
     for key in history:
         if "val" in key:
+            fig = plt.figure()
             plt.plot(history.get(key[4:]))
             plt.plot(history.get(key))
             plt.title(key[4:])
             plt.ylabel(key[4:])
             plt.xlabel("Epoch")
             plt.legend(["Train", "Test"], loc="upper left")
-            plt.savefig(f"{key[4:]}.png")
+            fig.savefig(f"{key[4:]}.png")
