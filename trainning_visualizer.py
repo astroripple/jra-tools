@@ -9,7 +9,6 @@ def draw_train_results(history):
     history : dict
         model.fit()で出力されるhistoryオブジェクトのhistoryフィールド
     """
-    fig = plt.figure()
     for key in history:
         if "val" in key:
             plt.plot(history.get(key[4:]))
@@ -19,4 +18,4 @@ def draw_train_results(history):
             plt.xlabel("Epoch")
             plt.legend(["Train", "Test"], loc="upper left")
             plt.show()
-    fig.savefig("train_result.png")
+            plt.savefig(f"{history.get(key[4:])}.png")
