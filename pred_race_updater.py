@@ -62,7 +62,7 @@ class PredictRaceUpdater:
 
     def oddses(self, race, baken):
         odds_dict = {}
-        for i, horse1 in enumrate(race.racehorses):
+        for i, horse1 in enumerate(race.racehorses):
             for j in range(i + 1, len(race.racehorses)):
                 horse2 = race.racehorses[j]
                 odds_dict.update(
@@ -115,7 +115,7 @@ class PredictRaceUpdater:
         if len(horses) <= 1:
             return 0
         pp = 0
-        for i, horse1 in enumrate(horses):
+        for i, horse1 in enumerate(horses):
             for j in range(i + 1, len(horses)):
                 horse2 = horses[j]
                 pp += 1 / self.umarenOdds(horse1, horse2)
