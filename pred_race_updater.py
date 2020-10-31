@@ -1,9 +1,42 @@
-from horseview.horsemodel import sesobj, PredictRaceData
+from horseview.horsemodel import sesobj, PredictRaceData, PredictData, db
+from .input_creator import InputCreator
 
 
 class PredictRaceUpdater:
-    def update(self, kaisais):
-        for kaisai in kaisais:
+    def __init__(self, kaisais):
+        self.kaisais = kaisais
+
+    def updatePredict(self, model):
+        inputData = InputCreator(self.kaisais)
+        preds = model.predict(inputData.x_data)
+        w = 0
+        for k in kaisais:
+            for r in k.races:
+                for h in r.racehorses:
+                    hn = h.num - 1
+                    pp1 = preds[0][w][hn]
+                    pp2 = preds[1][w][hn]
+                    pp3 = preds[2][w][hn]
+                    pp4 = preds[3][w][hn]
+                    pp5 = preds[4][w][hn]
+                    rentai_rate = 1 - ((1 - pp1) * (1 - pp2))
+                    fukusho_rate = 1 - ((1 - pp1) * (1 - pp2) * (1 - pp3))
+                    pd = PredictData(
+                        racehorsekey=h.racehorsekey,
+                        pp_icchaku=float(pp1),
+                        pp_nichaku=float(pp2),
+                        pp_sanchaku=float(pp3),
+                        rentai_rate=rentai_rate,
+                        fukusho_rate=fukusho_rate,
+                        tansho_odds=1 / pp1,
+                        fukusho_odds=1 / fukusho_rate,
+                    )
+                    db.session.add(pd)
+                w += 1
+        db.session.commit()
+
+    def update(self):
+        for kaisai in self.kaisais:
             for race in kaisai.races:
                 pred = PredictRaceData(
                     racekey=race.racekey,
