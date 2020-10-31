@@ -18,4 +18,4 @@ def draw_train_results(history):
             plt.xlabel("Epoch")
             plt.legend(["Train", "Test"], loc="upper left")
             plt.show()
-            plt.savefig(f"{history.get(key[4:])}.png")
+            plt.savefig(f"{key[4:]}.png")
