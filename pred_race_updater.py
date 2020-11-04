@@ -51,10 +51,15 @@ class PredictRaceUpdater:
         return self.oddses(race, "umaren")
 
     def umarenOdds(self, horse1, horse2):
-        p = (
-            horse1.predict.pp_icchaku * horse2.predict.pp_nichaku
-            + horse1.predict.pp_nichaku * horse2.predict.pp_icchaku
-        )
+        p1 = 1 / self.umatanOdds(horse1, horse2)
+        p2 = 1 / self.umatanOdds(horse2, horse1)
+        p = p1 + p2
+        return 1 / p
+
+    def umatanOdds(self, horse1, horse2):
+        p1 = horse1.predict.pp_icchaku
+        p2 = horse2.predict.pp_nichaku / (1 - horse1.predict.pp_nichaku)
+        p = p1 * p2
         return 1 / p
 
     def wideOddses(self, race):
@@ -76,16 +81,16 @@ class PredictRaceUpdater:
 
     def wideOdds(self, horse1, horse2):
         p = (
-            horse1.predict.pp_icchaku * horse2.predict.pp_nichaku
-            + horse1.predict.pp_icchaku * horse2.predict.pp_sanchaku
+            horse1.predict.pp_icchaku * horse2.predict.pp_nichaku / (1 - horse1.predict.pp_nichaku)
+            + horse1.predict.pp_icchaku * horse2.predict.pp_sanchaku / (1 - horse1.predict.pp_sanchaku)
         )
         p += (
-            horse1.predict.pp_nichaku * horse2.predict.pp_icchaku
-            + horse1.predict.pp_nichaku * horse2.predict.pp_sanchaku
+            horse1.predict.pp_nichaku * horse2.predict.pp_icchaku / (1 - horse1.predict.pp_icchaku)
+            + horse1.predict.pp_nichaku * horse2.predict.pp_sanchaku / (1 - horse1.predict.pp_sanchaku)
         )
         p += (
-            horse1.predict.pp_sanchaku * horse2.predict.pp_icchaku
-            + horse1.predict.pp_sanchaku * horse2.predict.pp_icchaku
+            horse1.predict.pp_sanchaku * horse2.predict.pp_icchaku / (1 - horse1.predict.pp_icchaku)
+            + horse1.predict.pp_sanchaku * horse2.predict.pp_nichaku / (1 - horse1.predict.pp_nichaku)
         )
         return 1 / p
 
