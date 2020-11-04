@@ -1,4 +1,4 @@
-from horseview.horsemodel import sesobj, PredictRaceData, PredictData, db
+from horseview.horsemodel import PredictRaceData, PredictData, db
 from .input_creator import InputCreator
 
 
@@ -44,8 +44,8 @@ class PredictRaceUpdater:
                     wide=self.wideOddses(race),
                     wakuren=self.wakurenOddses(race),
                 )
-                sesobj.add(pred)
-        sesobj.commit()
+                db.session.add(pred)
+        db.session.commit()
 
     def umarenOddses(self, race):
         return self.oddses(race, "umaren")
