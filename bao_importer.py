@@ -100,8 +100,7 @@ class BaoImporter:
                         if "umaren" in fileName
                         else self.getWideOdds(row[7].split())
                     )
-                    odd.all_estimated_odds = row[8]
-                    odd.sum_of_all_bought_count = row[9]
+                    odd.sum_of_all_bought_count = row[8]
                     sesobj.add(odd)
             sesobj.commit()
 
@@ -119,7 +118,6 @@ class BaoImporter:
                     odd.ran_horses = row[5]
                     odd.sold_flg = row[8]
                     odd.all_odds = self.getWakurenOdds(row[12])
-                    odd.all_estimated_odds = row[16]
                     odd.sum_of_all_bought_count = row[15]
                     sesobj.add(odd)
             sesobj.commit()
