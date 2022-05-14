@@ -12,6 +12,7 @@ class BaoImporter:
             }
             for kaisai in kaisais
         ]
+        self.racekeys = [race.racekey for kaisai in kaisais for race in kaisai.races ]
 
     def getKaisaiInfo(self, kaisaikey):
         return {
@@ -101,7 +102,8 @@ class BaoImporter:
                         else self.getWideOdds(row[7].split())
                     )
                     odd.sum_of_all_bought_count = row[8]
-                    sesobj.add(odd)
+                    if racekey in self.racekeys:
+                        sesobj.add(odd)
             sesobj.commit()
 
     def importWakurenCsv(self, fileName):
@@ -119,5 +121,6 @@ class BaoImporter:
                     odd.sold_flg = row[8]
                     odd.all_odds = self.getWakurenOdds(row[12])
                     odd.sum_of_all_bought_count = row[15]
-                    sesobj.add(odd)
+                    if racekey in self.racekeys:
+                        sesobj.add(odd)
             sesobj.commit()
