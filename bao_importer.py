@@ -92,16 +92,16 @@ class BaoImporter:
                 if racekey:
                     odd = UmarenOddsData() if "umaren" in fileName else WideOddsData()
                     odd.racekey = racekey
-                    odd.data_kbn = row[0]
-                    odd.registered_horses = row[4]
-                    odd.ran_horses = row[5]
-                    odd.sold_flg = row[6]
+                    odd.data_kbn = self._parseInt(row[0])
+                    odd.registered_horses = self._parseInt(row[4])
+                    odd.ran_horses = self._parseInt(row[5])
+                    odd.sold_flg = self._parseInt(row[6])
                     odd.all_odds = (
                         self.getUmarenOdds(row[7].split())
                         if "umaren" in fileName
                         else self.getWideOdds(row[7].split())
                     )
-                    odd.sum_of_all_bought_count = row[8]
+                    odd.sum_of_all_bought_count = self._parseInt(row[8])
                     if racekey in self.racekeys:
                         sesobj.add(odd)
             sesobj.commit()
@@ -115,12 +115,15 @@ class BaoImporter:
                 if racekey:
                     odd = WakurenOddsData()
                     odd.racekey = racekey
-                    odd.data_kbn = row[0]
-                    odd.registered_horses = row[4]
-                    odd.ran_horses = row[5]
-                    odd.sold_flg = row[8]
+                    odd.data_kbn = self._parseInt(row[0])
+                    odd.registered_horses = self._parseInt(row[4])
+                    odd.ran_horses = self._parseInt(row[5])
+                    odd.sold_flg = self._parseInt(row[8])
                     odd.all_odds = self.getWakurenOdds(row[12])
-                    odd.sum_of_all_bought_count = row[15]
+                    odd.sum_of_all_bought_count = self._parseInt(row[15])
                     if racekey in self.racekeys:
                         sesobj.add(odd)
             sesobj.commit()
+
+    def _parseInt(self, str):
+        return 0 if str == '' else str
