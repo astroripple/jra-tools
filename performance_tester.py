@@ -26,7 +26,9 @@ class PerformanceTester:
         self.model_name = model_name
         self.kaisais = kaisais
         self.recoveries = self.get_recoveries(kaisais)
-        self.period = f"{kaisais[0].ymd} - {kaisais[-1].ymd}"
+        ymds = list(set([kaisai.ymd for kaisai in kaisais]))
+        ymds.sort()
+        self.period = f"{ymds[0]} - {ymds[-1]}"
 
     def output_performance(self):
         self.draw_annual_performance(self.get_monthly_recovery(self.recoveries))
