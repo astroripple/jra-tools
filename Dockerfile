@@ -9,7 +9,7 @@ RUN pip install --upgrade pip && \
     pip install jupyterlab seaborn graphviz pydotplus sklearn && \
     apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/3bf863cc.pub && \
     apt update && \
-    apt install -y git fonts-ipaexfont graphviz && \
+    apt install -y fonts-ipaexfont graphviz && \
     echo -e "font.family       : IPAexGothic" >> /usr/local/lib/python3.6/dist-packages/matplotlib/mpl-data/matplotlibrc
 
 #Install JRDB Environment
