@@ -1,9 +1,9 @@
-import numpy as np
-from tensorflow.keras.models import Model, load_model
+from tensorflow.keras.models import load_model
 from tensorflow.keras.utils import plot_model
+import matplotlib.pyplot as plt
+import numpy as np
 from .input_creator import InputCreator
 from .label_creator import LabelCreator
-import matplotlib.pyplot as plt
 
 
 class PerformanceTester:
