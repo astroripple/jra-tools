@@ -1,13 +1,10 @@
 ﻿from tensorflow.keras.layers import (
     Activation,
-    Dense,
     Dropout,
     Flatten,
-    GaussianDropout,
     GaussianNoise,
     Input,
     Conv1D,
-    concatenate,
     Add,
 )
 from tensorflow.keras import Model
