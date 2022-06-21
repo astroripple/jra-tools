@@ -1,4 +1,4 @@
-from horseview.horsemodel import sesobj, UmarenOddsData, WideOddsData, WakurenOddsData
+from jrdb_model import sesobj, UmarenOddsData, WideOddsData, WakurenOddsData
 import csv
 
 

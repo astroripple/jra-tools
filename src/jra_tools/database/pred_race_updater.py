@@ -1,5 +1,5 @@
-from horseview.horsemodel import PredictRaceData, PredictData, db
-from .input_creator import InputCreator
+from jrdb_model import PredictRaceData, PredictData, db
+from ..input_creator import InputCreator
 
 
 class PredictRaceUpdater:
