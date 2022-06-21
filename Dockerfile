@@ -16,7 +16,7 @@ RUN pip install --upgrade pip && \
 RUN mkdir code && \
     mkdir /opt/lib && \
     pip uninstall -y enum34 && \
-    pip install jrdb_model
+    pip install jrdb_model bs4
 
 COPY ./src/jra_tools /opt/lib/util
 WORKDIR /code
