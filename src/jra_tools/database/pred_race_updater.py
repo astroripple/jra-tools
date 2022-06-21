@@ -1,5 +1,5 @@
 from jrdb_model import PredictRaceData, PredictData, db
-from ..input_creator import InputCreator
+from ..machine_learning.input_creator import InputCreator
 
 
 class PredictRaceUpdater:
