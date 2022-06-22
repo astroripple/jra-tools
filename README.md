@@ -5,5 +5,5 @@ https://github.com/astroripple/horseview
 ## Usage
 ### Install
 ```
-pip install jra-tool 
+pip install jra-tools
 ```
