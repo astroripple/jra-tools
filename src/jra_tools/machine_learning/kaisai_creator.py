@@ -1,5 +1,5 @@
 from sqlalchemy.orm import joinedload
-from horseview.horsemodel import KaisaiData
+from jrdb_model import KaisaiData
 
 
 def get_kaisais(start, end):

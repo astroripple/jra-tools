@@ -1,4 +1,4 @@
-from horseview.horsemodel import KaisaiData
+from jrdb_model import KaisaiData
 from . import schedule
 
 

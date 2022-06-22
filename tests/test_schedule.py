@@ -1,7 +1,5 @@
-import unittest, sys, os
-
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-import schedule
+import unittest
+from src.jra_tools import schedule
 
 
 class TestSchedule(unittest.TestCase):

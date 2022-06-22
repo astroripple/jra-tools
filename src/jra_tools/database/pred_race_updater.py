@@ -1,5 +1,5 @@
-from horseview.horsemodel import PredictRaceData, PredictData, db
-from .input_creator import InputCreator
+from jrdb_model import PredictRaceData, PredictData, db
+from ..machine_learning.input_creator import InputCreator
 
 
 class PredictRaceUpdater:
@@ -17,8 +17,8 @@ class PredictRaceUpdater:
                     pp1 = preds[0][w][hn]
                     pp2 = preds[1][w][hn]
                     pp3 = preds[2][w][hn]
-                    pp4 = preds[3][w][hn]
-                    pp5 = preds[4][w][hn]
+                    # pp4 = preds[3][w][hn]
+                    # pp5 = preds[4][w][hn]
                     rentai_rate = 1 - ((1 - pp1) * (1 - pp2))
                     fukusho_rate = 1 - ((1 - pp1) * (1 - pp2) * (1 - pp3))
                     pd = PredictData(
