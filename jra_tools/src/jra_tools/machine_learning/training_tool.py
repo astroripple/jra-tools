@@ -1,8 +1,9 @@
 import numpy as np
 from sklearn.preprocessing import StandardScaler
+from jra_tools import KaisaiData
 
 
-def createScoreDataMatrix(kaisais):
+def createScoreDataMatrix(kaisais: list[KaisaiData]):
     num_max_horse = 18
     num_race = numberOfRaces(kaisais)
     num_score = numberOfScoreFeatures(kaisais[0])
@@ -10,7 +11,7 @@ def createScoreDataMatrix(kaisais):
     return _setScores(baseMatrix, kaisais)
 
 
-def _setScores(score_data, kaisais):
+def _setScores(score_data, kaisais: list[KaisaiData]):
     w = 0
     for kaisai in kaisais:
         for race in kaisai.races:
@@ -38,14 +39,14 @@ def standardize(matrix):
     return sds
 
 
-def numberOfRaces(kaisais):
+def numberOfRaces(kaisais: list[KaisaiData]):
     num_race = 0
     for kaisai in kaisais:
         num_race += len(kaisai.races)
     return num_race
 
 
-def numberOfScoreFeatures(kaisai):
+def numberOfScoreFeatures(kaisai: KaisaiData):
     dummyScores = _addKaisaiScores([], kaisai)
     dummyScores.append(kaisai.races[0].num_of_all_horse)
     dummyScores = _addHorseScores(dummyScores, kaisai.races[0].racehorses[0])
@@ -61,7 +62,7 @@ def _setScoreData(matrix, raceNum, horseNum, scores):
     return matrix
 
 
-def _addKaisaiScores(scores, kaisai):
+def _addKaisaiScores(scores, kaisai: KaisaiData):
     return scores + [
         kaisai.turf_baba_in,
         kaisai.turf_baba_center,
