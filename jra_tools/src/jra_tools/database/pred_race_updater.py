@@ -1,9 +1,16 @@
-from jrdb_model import PredictRaceData, PredictData, db
+from jrdb_model import (
+    PredictRaceData,
+    PredictData,
+    KaisaiData,
+    BangumiData,
+    RacehorseData,
+    db,
+)
 from ..machine_learning.input_creator import InputCreator
 
 
 class PredictRaceUpdater:
-    def __init__(self, kaisais):
+    def __init__(self, kaisais: list[KaisaiData]):
         self.kaisais = kaisais
 
     def updatePredict(self, model):
@@ -45,7 +52,7 @@ class PredictRaceUpdater:
                 db.session.add(pred)
         db.session.commit()
 
-    def umarenOddses(self, race):
+    def umarenOddses(self, race: BangumiData):
         return self.oddses(race, "umaren")
 
     def umarenOdds(self, horse1, horse2):
@@ -60,10 +67,10 @@ class PredictRaceUpdater:
         p = p1 * p2
         return 1 / p
 
-    def wideOddses(self, race):
+    def wideOddses(self, race: BangumiData):
         return self.oddses(race, "wide")
 
-    def oddses(self, race, baken):
+    def oddses(self, race: BangumiData, baken: str):
         odds_dict = {}
         for i, horse1 in enumerate(race.racehorses):
             for j in range(i + 1, len(race.racehorses)):
@@ -77,7 +84,7 @@ class PredictRaceUpdater:
                 )
         return odds_dict
 
-    def wideOdds(self, horse1, horse2):
+    def wideOdds(self, horse1: RacehorseData, horse2: RacehorseData):
         p = horse1.predict.pp_icchaku * horse2.predict.pp_nichaku / (
             1 - horse1.predict.pp_nichaku
         ) + horse1.predict.pp_icchaku * horse2.predict.pp_sanchaku / (
@@ -95,7 +102,7 @@ class PredictRaceUpdater:
         )
         return 1 / p
 
-    def wakurenOddses(self, race):
+    def wakurenOddses(self, race: BangumiData):
         odds_dict = {}
         for i in range(8):
             for j in range(i, 8):
@@ -106,7 +113,7 @@ class PredictRaceUpdater:
                 )
         return odds_dict
 
-    def wakurenOdds(self, race, gate1, gate2):
+    def wakurenOdds(self, race: BangumiData, gate1: int, gate2: int):
         horses1 = [horse for horse in race.racehorses if horse.waku == gate1]
         if gate1 == gate2:
             return self.wakurenSameOdds(horses1)
@@ -119,7 +126,7 @@ class PredictRaceUpdater:
                 pp += 1 / self.umarenOdds(horse1, horse2)
         return 1 / pp
 
-    def wakurenSameOdds(self, horses):
+    def wakurenSameOdds(self, horses: list[RacehorseData]):
         if len(horses) <= 1:
             return 0
         pp = 0
