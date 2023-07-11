@@ -1,8 +1,10 @@
+"""カテゴリ変数を取得する"""
 import numpy as np
+from jrdb_model import KaisaiData, BangumiData, RacehorseData
 from .jrdbdummies import CategoryGetter
 
 
-def getCategoryData(kaisais):
+def getCategoryData(kaisais: list[KaisaiData]):
     categories = _getCategories(kaisais)
     return _convertToMatrix(categories)
 
@@ -15,13 +17,13 @@ def _convertToMatrix(categories):
     return matrix
 
 
-def _getCategories(kaisais):
+def _getCategories(kaisais: list[KaisaiData]):
     return [
         _getRaceCategories(kaisai, race) for kaisai in kaisais for race in kaisai.races
     ]
 
 
-def _getRaceCategories(kaisai, race):
+def _getRaceCategories(kaisai: KaisaiData, race: BangumiData):
     horses = sorted(race.racehorses, key=lambda h: h.racehorsekey)
     for horse in horses:
         if horse.num == 1:
@@ -31,7 +33,7 @@ def _getRaceCategories(kaisai, race):
     return dummies
 
 
-def _getCategory(kaisai, race, horse):
+def _getCategory(kaisai: KaisaiData, race: BangumiData, horse: RacehorseData):
     cg = CategoryGetter()
     return np.hstack(
         (
