@@ -17,8 +17,6 @@ class PredictRaceUpdater:
                     pp1 = preds[0][w][hn]
                     pp2 = preds[1][w][hn]
                     pp3 = preds[2][w][hn]
-                    # pp4 = preds[3][w][hn]
-                    # pp5 = preds[4][w][hn]
                     rentai_rate = 1 - ((1 - pp1) * (1 - pp2))
                     fukusho_rate = 1 - ((1 - pp1) * (1 - pp2) * (1 - pp3))
                     pd = PredictData(
@@ -80,17 +78,20 @@ class PredictRaceUpdater:
         return odds_dict
 
     def wideOdds(self, horse1, horse2):
-        p = (
-            horse1.predict.pp_icchaku * horse2.predict.pp_nichaku / (1 - horse1.predict.pp_nichaku)
-            + horse1.predict.pp_icchaku * horse2.predict.pp_sanchaku / (1 - horse1.predict.pp_sanchaku)
+        p = horse1.predict.pp_icchaku * horse2.predict.pp_nichaku / (
+            1 - horse1.predict.pp_nichaku
+        ) + horse1.predict.pp_icchaku * horse2.predict.pp_sanchaku / (
+            1 - horse1.predict.pp_sanchaku
         )
-        p += (
-            horse1.predict.pp_nichaku * horse2.predict.pp_icchaku / (1 - horse1.predict.pp_icchaku)
-            + horse1.predict.pp_nichaku * horse2.predict.pp_sanchaku / (1 - horse1.predict.pp_sanchaku)
+        p += horse1.predict.pp_nichaku * horse2.predict.pp_icchaku / (
+            1 - horse1.predict.pp_icchaku
+        ) + horse1.predict.pp_nichaku * horse2.predict.pp_sanchaku / (
+            1 - horse1.predict.pp_sanchaku
         )
-        p += (
-            horse1.predict.pp_sanchaku * horse2.predict.pp_icchaku / (1 - horse1.predict.pp_icchaku)
-            + horse1.predict.pp_sanchaku * horse2.predict.pp_nichaku / (1 - horse1.predict.pp_nichaku)
+        p += horse1.predict.pp_sanchaku * horse2.predict.pp_icchaku / (
+            1 - horse1.predict.pp_icchaku
+        ) + horse1.predict.pp_sanchaku * horse2.predict.pp_nichaku / (
+            1 - horse1.predict.pp_nichaku
         )
         return 1 / p
 
