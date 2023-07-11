@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-from jra_tools import KaisaiData
+from jrdb_model import KaisaiData, BangumiData, RacehorseData
 
 
 def createScoreDataMatrix(kaisais: list[KaisaiData]):
@@ -21,7 +21,7 @@ def _setScores(score_data, kaisais: list[KaisaiData]):
     return score_data
 
 
-def _setRaceScores(matrix, race, raceNum, kaisaiScores):
+def _setRaceScores(matrix, race: BangumiData, raceNum: int, kaisaiScores):
     raceScores = kaisaiScores
     raceScores.append(race.num_of_all_horse)
     for horse in race.racehorses:
@@ -53,10 +53,10 @@ def numberOfScoreFeatures(kaisai: KaisaiData):
     return len(dummyScores)
 
 
-def _setScoreData(matrix, raceNum, horseNum, scores):
+def _setScoreData(matrix, raceNum: int, horseNum: int, scores):
     features = len(matrix[raceNum, horseNum])
     if features != len(scores):
-        return error
+        raise RuntimeError("特徴量の数と行列の次元数が一致しません")
     for s in range(features):
         matrix[raceNum, horseNum, s] = scores[s]
     return matrix
@@ -83,7 +83,7 @@ def _addKaisaiScores(scores, kaisai: KaisaiData):
     ]
 
 
-def _addHorseScores(scores, horse):
+def _addHorseScores(scores, horse: RacehorseData):
     horseScores = [
         horse.idm,
         horse.jockey_score,
