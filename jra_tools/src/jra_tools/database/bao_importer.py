@@ -1,4 +1,4 @@
-from jrdb_model import sesobj, UmarenOddsData, WideOddsData, WakurenOddsData
+from jrdb_model import sesobj, UmarenOddsData, WideOddsData, WakurenOddsData, app
 import csv
 
 
@@ -87,43 +87,45 @@ class BaoImporter:
         with open(fileName) as f:
             reader = csv.reader(f)
             header = next(reader)
-            for row in reader:
-                racekey = self.convertRaceCodeToRaceKey(str(int(float(row[2]))))
-                if racekey:
-                    odd = UmarenOddsData() if "umaren" in fileName else WideOddsData()
-                    odd.racekey = racekey
-                    odd.data_kbn = self._parseInt(row[0])
-                    odd.registered_horses = self._parseInt(row[4])
-                    odd.ran_horses = self._parseInt(row[5])
-                    odd.sold_flg = self._parseInt(row[6])
-                    odd.all_odds = (
-                        self.getUmarenOdds(row[7].split())
-                        if "umaren" in fileName
-                        else self.getWideOdds(row[7].split())
-                    )
-                    odd.sum_of_all_bought_count = self._parseInt(row[8])
-                    if racekey in self.racekeys:
-                        sesobj.add(odd)
-            sesobj.commit()
+            with app.app_context():
+                for row in reader:
+                    racekey = self.convertRaceCodeToRaceKey(str(int(float(row[2]))))
+                    if racekey:
+                        odd = UmarenOddsData() if "umaren" in fileName else WideOddsData()
+                        odd.racekey = racekey
+                        odd.data_kbn = self._parseInt(row[0])
+                        odd.registered_horses = self._parseInt(row[4])
+                        odd.ran_horses = self._parseInt(row[5])
+                        odd.sold_flg = self._parseInt(row[6])
+                        odd.all_odds = (
+                            self.getUmarenOdds(row[7].split())
+                            if "umaren" in fileName
+                            else self.getWideOdds(row[7].split())
+                        )
+                        odd.sum_of_all_bought_count = self._parseInt(row[8])
+                        if racekey in self.racekeys:
+                            sesobj.add(odd)
+                sesobj.commit()
 
     def importWakurenCsv(self, fileName):
         with open(fileName) as f:
             reader = csv.reader(f)
             header = next(reader)
-            for row in reader:
-                racekey = self.convertRaceCodeToRaceKey(str(int(float(row[2]))))
-                if racekey:
-                    odd = WakurenOddsData()
-                    odd.racekey = racekey
-                    odd.data_kbn = self._parseInt(row[0])
-                    odd.registered_horses = self._parseInt(row[4])
-                    odd.ran_horses = self._parseInt(row[5])
-                    odd.sold_flg = self._parseInt(row[8])
-                    odd.all_odds = self.getWakurenOdds(row[12])
-                    odd.sum_of_all_bought_count = self._parseInt(row[15])
-                    if racekey in self.racekeys:
-                        sesobj.add(odd)
-            sesobj.commit()
+            with app.app_context():
+                for row in reader:
+                    racekey = self.convertRaceCodeToRaceKey(str(int(float(row[2]))))
+                    if racekey:
+                        odd = WakurenOddsData()
+                        odd.racekey = racekey
+                        odd.data_kbn = self._parseInt(row[0])
+                        odd.registered_horses = self._parseInt(row[4])
+                        odd.ran_horses = self._parseInt(row[5])
+                        odd.sold_flg = self._parseInt(row[8])
+                        odd.all_odds = self.getWakurenOdds(row[12])
+                        odd.sum_of_all_bought_count = self._parseInt(row[15])
+                        if racekey in self.racekeys:
+                            sesobj.add(odd)
+                sesobj.commit()
 
     def _parseInt(self, str):
         return 0 if str == '' else str
