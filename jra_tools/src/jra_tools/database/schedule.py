@@ -38,9 +38,11 @@ def open_days(month: int = MONTH, year: int = YEAR) -> List[int]:
 
 
 def _parse_to_days(soup: BeautifulSoup) -> List[int]:
-    days = []
-    for s in soup.select(".hr-tableSchedule__data--date"):
-        day = re.sub("\\D", "", s.contents[0])
-        if day != "":
-            days.append(int(day))
-    return list(set(days))
+    return list(
+        set(
+            [
+                int(re.sub("\\D", "", s.contents[0]))
+                for s in soup.select(".hr-tableSchedule__data--date")
+            ]
+        )
+    )
