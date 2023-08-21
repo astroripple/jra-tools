@@ -16,7 +16,7 @@
 	// "forwardPorts": [],
 
 	// Uncomment the next line to run commands after the container is created.
-	"postCreateCommand": "apt-get install -y git && pip install pytest pymysql",
+	"postCreateCommand": "apt-get install -y git && pip install pytest pytest-mock pymysql",
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
