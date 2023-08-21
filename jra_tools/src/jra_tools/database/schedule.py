@@ -37,7 +37,7 @@ def open_days(month: int = MONTH, year: int = YEAR) -> List[int]:
     return [int(f"{year:04d}{month:02d}{day:02d}") for day in _parse_to_days(soup)]
 
 
-def _parse_to_days(soup):
+def _parse_to_days(soup: BeautifulSoup) -> List[int]:
     days = []
     for s in soup.find("table").find_all("tr"):
         if s.td is not None:
