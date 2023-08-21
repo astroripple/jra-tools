@@ -1,16 +1,19 @@
-import unittest
-from src.jra_tools import schedule
+"""Yahoo競馬のクローラーテスト"""
+from pytest_mock import MockFixture
+from src.jra_tools.database.schedule import annual_schedule
 
 
-class TestSchedule(unittest.TestCase):
-    def test_annual_schedule(self):
-        days = schedule.annual_schedule(2018)
-        self.assertEqual(len(days), 109)
-        self.assertEqual(days[0], 20180106)
-        self.assertEqual(days[-1], 20181228)
-        self.assertEqual(days[54], 20180701)
+def test_annual_schedule(mocker: MockFixture):
+    """スケジューラをテストする
 
+    Args:
+        mocker (MockFixture): モッカーオブジェクト
+    """
+    patched_request = mocker.patch("src.jra_tools.database.schedule.requests")
 
-if __name__ == "__main__":
-    # スクリプトとして実行された場合の処理
-    unittest.main(verbosity=2)
+    days = annual_schedule(2018)
+
+    assert len(days) == 109
+    assert days[0] == 20180106
+    assert days[-1] == 20181228
+    assert days[54] == 20180701
