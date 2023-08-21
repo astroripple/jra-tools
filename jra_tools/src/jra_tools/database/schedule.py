@@ -31,17 +31,16 @@ def open_days(month: int = MONTH, year: int = YEAR) -> List[int]:
     Returns:
         List[int]: 開催される日付一覧
     """
-    base_url = f"https://keiba.yahoo.co.jp/schedule/list/{year}/"
-    payload = {"month": str(month)}
+    base_url = "https://sports.yahoo.co.jp/keiba/schedule/monthly"
+    payload = {"year": str(year), "month": str(month)}
     soup = BeautifulSoup(requests.get(base_url, payload).text, "lxml")
     return [int(f"{year:04d}{month:02d}{day:02d}") for day in _parse_to_days(soup)]
 
 
 def _parse_to_days(soup: BeautifulSoup) -> List[int]:
     days = []
-    for s in soup.find("table").find_all("tr"):
-        if s.td is not None:
-            day = re.sub("\\D", "", s.td.contents[0])
-            if day != "":
-                days.append(int(day))
+    for s in soup.select(".hr-tableSchedule__data--date"):
+        day = re.sub("\\D", "", s.contents[0])
+        if day != "":
+            days.append(int(day))
     return list(set(days))
