@@ -8,7 +8,7 @@
 		// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
 		"dockerfile": "../Dockerfile"
 	},
-	"runArgs": ["--network=host", "--rm"],
+	"runArgs": ["--network=host", "--rm", "--env-file",".devcontainer/devcontainer.env"],
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
@@ -16,8 +16,7 @@
 	// "forwardPorts": [],
 
 	// Uncomment the next line to run commands after the container is created.
-	"postCreateCommand": "apt-get install -y git && pip install pytest",
-
+	"postCreateCommand": "apt-get install -y git && pip install pytest pymysql",
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
