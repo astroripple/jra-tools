@@ -33,7 +33,7 @@
 				"remote.SSH.remoteServerListenOnSocket": true,
 				"dev.containers.copyGitConfig": true,
 				"python.testing.pytestArgs": [
-					"tests"
+					"--fixtures","--collect-only","tests"
 				],
 				"python.testing.unittestEnabled": false,
 				"python.testing.pytestEnabled": true			
