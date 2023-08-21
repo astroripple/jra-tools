@@ -25,7 +25,25 @@ def patched_get(mocker: MockFixture) -> Generator[MagicMock, None, None]:
     yield patched_get
 
 
-def test_open_days(patched_get: MagicMock):
+@fixture
+def patched_aio_get(mocker: MockFixture) -> Generator[MagicMock, None, None]:
+    """requestsモジュールをパッチしておく
+
+    Args:
+        mocker (MockFixture): モッカー
+
+    Yields:
+        _type_: request.get
+    """
+    patched_aiohttp = mocker.patch("src.jra_tools.database.schedule.aiohttp")
+    mock_session = patched_aiohttp.ClientSession()
+    mock_response = mock_session.get.return_value
+    with open("jra_tools/tests/yahoo_keiba.pkl", mode="rb") as f:
+        mock_response.text = pickle.load(f)
+    yield mock_session.get
+
+
+def test_open_days(patched_aio_get: MagicMock):
     """対象の年、月に対するユニットテスト
 
     Args:
@@ -33,7 +51,7 @@ def test_open_days(patched_get: MagicMock):
     """
     days = open_days(12, 2018)
 
-    assert patched_get.call_args_list[0][0] == (
+    assert patched_aio_get.call_args_list[0][0] == (
         "https://sports.yahoo.co.jp/keiba/schedule/monthly",
         {"year": "2018", "month": "12"},
     )
