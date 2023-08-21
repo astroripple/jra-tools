@@ -1,17 +1,36 @@
-import requests
+"""Yahoo競馬からスケジュールを確認する"""
+from typing import List
 import re
 from datetime import datetime
+import requests
 from bs4 import BeautifulSoup
 
 YEAR = int(datetime.now().strftime("%Y"))
 MONTH = int(datetime.now().strftime("%m"))
 
 
-def annual_schedule(year=YEAR):
+def annual_schedule(year: int = YEAR) -> List[int]:
+    """指定して年間スケジュールを取得する
+
+    Args:
+        year (int, optional): 取得する年. Defaults to YEAR.
+
+    Returns:
+        List[int]: 開催される日付一覧
+    """
     return [day for month in range(1, 13) for day in open_days(month, year)]
 
 
-def open_days(month=MONTH, year=YEAR):
+def open_days(month: int = MONTH, year: int = YEAR) -> List[int]:
+    """指定した年、月の開催一覧を取得する
+
+    Args:
+        month (int, optional): 月. Defaults to MONTH.
+        year (int, optional): 年. Defaults to YEAR.
+
+    Returns:
+        List[int]: 開催される日付一覧
+    """
     base_url = f"https://keiba.yahoo.co.jp/schedule/list/{year}/"
     payload = {"month": str(month)}
     soup = BeautifulSoup(requests.get(base_url, payload).text, "lxml")
