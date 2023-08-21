@@ -50,21 +50,14 @@ def test_open_days(patched_get: MagicMock):
     ]
 
 
-# def test_annual_schedule(patched_get):
-#     """スケジューラをテストする
+def test_annual_schedule(patched_get):
+    """スケジューラをテストする
 
-#     Args:
-#         mocker (MockFixture): モッカーオブジェクト
-#     """
+    Args:
+        mocker (MockFixture): モッカーオブジェクト
+    """
 
-#     days = annual_schedule(2018)
+    days = annual_schedule(2018)
 
-#     assert len(patched_get.call_args_list) == 12
-#     assert patched_get.call_args_list[0][0] == (
-#         "https://keiba.yahoo.co.jp/schedule/list/2018/",
-#         {"month": "1"},
-#     )
-#     # assert len(days) == 109
-#     # assert days[0] == 20180106
-#     assert days[-1] == 20181228
-#     # assert days[54] == 20180701
+    assert len(patched_get.call_args_list) == 12
+    assert days[-1] == 20181228
