@@ -32,8 +32,8 @@ def test_open_days(patched_get):
     days = open_days(1, 2018)
 
     assert patched_get.call_args_list[0][0] == (
-        "https://keiba.yahoo.co.jp/schedule/list/2018/",
-        {"month": "1"},
+        "https://sports.yahoo.co.jp/keiba/schedule/monthly",
+        {"year": "2018", "month": "1"},
     )
     assert len(days) == 8
 
