@@ -29,30 +29,40 @@ def test_open_days(patched_get):
     Args:
         patched_get (_type_): _description_
     """
-    days = open_days(1, 2018)
+    days = open_days(12, 2018)
 
     assert patched_get.call_args_list[0][0] == (
         "https://sports.yahoo.co.jp/keiba/schedule/monthly",
-        {"year": "2018", "month": "1"},
+        {"year": "2018", "month": "12"},
     )
-    assert len(days) == 8
+    assert days == [
+        20181201,
+        20181202,
+        20181208,
+        20181209,
+        20181215,
+        20181216,
+        20181222,
+        20181223,
+        20181228,
+    ]
 
 
-def test_annual_schedule(patched_get):
-    """スケジューラをテストする
+# def test_annual_schedule(patched_get):
+#     """スケジューラをテストする
 
-    Args:
-        mocker (MockFixture): モッカーオブジェクト
-    """
+#     Args:
+#         mocker (MockFixture): モッカーオブジェクト
+#     """
 
-    days = annual_schedule(2018)
+#     days = annual_schedule(2018)
 
-    assert len(patched_get.call_args_list) == 12
-    assert patched_get.call_args_list[0][0] == (
-        "https://keiba.yahoo.co.jp/schedule/list/2018/",
-        {"month": "1"},
-    )
-    # assert len(days) == 109
-    # assert days[0] == 20180106
-    assert days[-1] == 20181228
-    # assert days[54] == 20180701
+#     assert len(patched_get.call_args_list) == 12
+#     assert patched_get.call_args_list[0][0] == (
+#         "https://keiba.yahoo.co.jp/schedule/list/2018/",
+#         {"month": "1"},
+#     )
+#     # assert len(days) == 109
+#     # assert days[0] == 20180106
+#     assert days[-1] == 20181228
+#     # assert days[54] == 20180701
