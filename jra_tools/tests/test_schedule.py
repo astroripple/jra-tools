@@ -1,12 +1,14 @@
 """Yahoo競馬のクローラーテスト"""
 import pickle
+from typing import Generator
+from unittest.mock import MagicMock
 from pytest import fixture
 from pytest_mock import MockFixture
 from src.jra_tools.database.schedule import annual_schedule, open_days
 
 
 @fixture
-def patched_get(mocker: MockFixture):
+def patched_get(mocker: MockFixture) -> Generator[MagicMock, None, None]:
     """requestsモジュールをパッチしておく
 
     Args:
@@ -23,11 +25,11 @@ def patched_get(mocker: MockFixture):
     yield patched_get
 
 
-def test_open_days(patched_get):
-    """_summary_
+def test_open_days(patched_get: MagicMock):
+    """対象の年、月に対するユニットテスト
 
     Args:
-        patched_get (_type_): _description_
+        patched_get (MagicMock): パッチ済みのrequests.get
     """
     days = open_days(12, 2018)
 
