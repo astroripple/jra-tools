@@ -1,6 +1,6 @@
 ﻿"""推論に必要なデータセットを作成する"""
 import numpy as np
-from jra_tools import KaisaiData
+from jrdb_model import KaisaiData
 from . import training_tool
 from . import category_data
 
