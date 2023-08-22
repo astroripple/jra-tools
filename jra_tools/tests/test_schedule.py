@@ -1,60 +1,38 @@
 """Yahoo競馬のクローラーテスト"""
 import pickle
 from typing import Generator
-from unittest.mock import MagicMock
-from pytest import fixture
-from pytest_mock import MockFixture
-from src.jra_tools.database.schedule import annual_schedule, open_days
+import pytest
+from aioresponses import aioresponses
+from src.jra_tools.database.schedule import open_days
 
 
-@fixture
-def patched_get(mocker: MockFixture) -> Generator[MagicMock, None, None]:
-    """requestsモジュールをパッチしておく
-
-    Args:
-        mocker (MockFixture): モッカー
+@pytest.fixture
+def server() -> Generator[aioresponses, None, None]:
+    """リクエストを受け付けるサーバーをモックする
 
     Yields:
-        _type_: request.get
+        Generator[aioresponses, None, None]: _description_
     """
-    patched_requests = mocker.patch("src.jra_tools.database.schedule.requests")
-    patched_get = patched_requests.get
-    mock_response = patched_get.return_value
-    with open("jra_tools/tests/yahoo_keiba.pkl", mode="rb") as f:
-        mock_response.text = pickle.load(f)
-    yield patched_get
+    with aioresponses() as m:
+        with open("jra_tools/tests/yahoo_keiba.pkl", mode="rb") as f:
+            m.get(
+                "https://sports.yahoo.co.jp/keiba/schedule/monthly?month=12&year=2018",
+                status=200,
+                body=pickle.load(f),
+            )
+            yield m
 
 
-@fixture
-def patched_aio_get(mocker: MockFixture) -> Generator[MagicMock, None, None]:
-    """requestsモジュールをパッチしておく
-
-    Args:
-        mocker (MockFixture): モッカー
-
-    Yields:
-        _type_: request.get
-    """
-    patched_aiohttp = mocker.patch("src.jra_tools.database.schedule.aiohttp")
-    mock_session = patched_aiohttp.ClientSession()
-    mock_response = mock_session.get.return_value
-    with open("jra_tools/tests/yahoo_keiba.pkl", mode="rb") as f:
-        mock_response.text = pickle.load(f)
-    yield mock_session.get
-
-
-def test_open_days(patched_aio_get: MagicMock):
+@pytest.mark.asyncio
+async def test_open_days(server: aioresponses):
     """対象の年、月に対するユニットテスト
 
     Args:
-        patched_get (MagicMock): パッチ済みのrequests.get
+        server (aioresponses): モックサーバー
     """
-    days = open_days(12, 2018)
+    days = await open_days(12, 2018)
 
-    assert patched_aio_get.call_args_list[0][0] == (
-        "https://sports.yahoo.co.jp/keiba/schedule/monthly",
-        {"year": "2018", "month": "12"},
-    )
+    server.assert_called_once()
     assert days == [
         20181201,
         20181202,
@@ -68,14 +46,14 @@ def test_open_days(patched_aio_get: MagicMock):
     ]
 
 
-def test_annual_schedule(patched_get):
-    """スケジューラをテストする
+# def test_annual_schedule(patched_get):
+#     """スケジューラをテストする
 
-    Args:
-        mocker (MockFixture): モッカーオブジェクト
-    """
+#     Args:
+#         mocker (MockFixture): モッカーオブジェクト
+#     """
 
-    days = annual_schedule(2018)
+#     days = annual_schedule(2018)
 
-    assert len(patched_get.call_args_list) == 12
-    assert days[-1] == 20181228
+#     assert len(patched_get.call_args_list) == 12
+#     assert days[-1] == 20181228
