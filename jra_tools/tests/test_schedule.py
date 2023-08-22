@@ -2,8 +2,9 @@
 import pickle
 from typing import Generator
 import pytest
+from aiohttp.client_exceptions import ClientConnectionError
 from aioresponses import aioresponses
-from src.jra_tools.database.schedule import open_days
+from src.jra_tools.database.schedule import open_days, annual_schedule
 
 
 @pytest.fixture
@@ -46,14 +47,21 @@ async def test_open_days(server: aioresponses):
     ]
 
 
-# def test_annual_schedule(patched_get):
-#     """スケジューラをテストする
+@pytest.mark.asyncio
+async def test_annual_schedule(server: aioresponses):
+    """
+    スケジューラをテストする
+    12の並列リクエストの内、一つでもコネクションができないとエラーが発生する
 
-#     Args:
-#         mocker (MockFixture): モッカーオブジェクト
-#     """
+    Args:
+        mocker (MockFixture): モッカーオブジェクト
+    """
 
-#     days = annual_schedule(2018)
+    with pytest.raises(ClientConnectionError) as e:
+        await annual_schedule(2018)
 
-#     assert len(patched_get.call_args_list) == 12
-#     assert days[-1] == 20181228
+    server.assert_called()
+    assert (
+        str(e.value)
+        == "Connection refused: GET https://sports.yahoo.co.jp/keiba/schedule/monthly?month=1&year=2018"
+    )
