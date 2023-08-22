@@ -1,42 +1,39 @@
 """Yahoo競馬のクローラーテスト"""
 import pickle
 from typing import Generator
-from unittest.mock import MagicMock
-from pytest import fixture
-from pytest_mock import MockFixture
-from src.jra_tools.database.schedule import annual_schedule, open_days
+import pytest
+from aiohttp.client_exceptions import ClientConnectionError
+from aioresponses import aioresponses
+from src.jra_tools.database.schedule import open_days, annual_schedule
 
 
-@fixture
-def patched_get(mocker: MockFixture) -> Generator[MagicMock, None, None]:
-    """requestsモジュールをパッチしておく
-
-    Args:
-        mocker (MockFixture): モッカー
+@pytest.fixture
+def server() -> Generator[aioresponses, None, None]:
+    """リクエストを受け付けるサーバーをモックする
 
     Yields:
-        _type_: request.get
+        Generator[aioresponses, None, None]: _description_
     """
-    patched_requests = mocker.patch("src.jra_tools.database.schedule.requests")
-    patched_get = patched_requests.get
-    mock_response = patched_get.return_value
-    with open("jra_tools/tests/yahoo_keiba.pkl", mode="rb") as f:
-        mock_response.text = pickle.load(f)
-    yield patched_get
+    with aioresponses() as m:
+        with open("jra_tools/tests/yahoo_keiba.pkl", mode="rb") as f:
+            m.get(
+                "https://sports.yahoo.co.jp/keiba/schedule/monthly?month=12&year=2018",
+                status=200,
+                body=pickle.load(f),
+            )
+            yield m
 
 
-def test_open_days(patched_get: MagicMock):
+@pytest.mark.asyncio
+async def test_open_days(server: aioresponses):
     """対象の年、月に対するユニットテスト
 
     Args:
-        patched_get (MagicMock): パッチ済みのrequests.get
+        server (aioresponses): モックサーバー
     """
-    days = open_days(12, 2018)
+    days = await open_days(12, 2018)
 
-    assert patched_get.call_args_list[0][0] == (
-        "https://sports.yahoo.co.jp/keiba/schedule/monthly",
-        {"year": "2018", "month": "12"},
-    )
+    server.assert_called_once()
     assert days == [
         20181201,
         20181202,
@@ -50,14 +47,21 @@ def test_open_days(patched_get: MagicMock):
     ]
 
 
-def test_annual_schedule(patched_get):
-    """スケジューラをテストする
+@pytest.mark.asyncio
+async def test_annual_schedule(server: aioresponses):
+    """
+    スケジューラをテストする
+    12の並列リクエストの内、一つでもコネクションができないとエラーが発生する
 
     Args:
         mocker (MockFixture): モッカーオブジェクト
     """
 
-    days = annual_schedule(2018)
+    with pytest.raises(ClientConnectionError) as e:
+        await annual_schedule(2018)
 
-    assert len(patched_get.call_args_list) == 12
-    assert days[-1] == 20181228
+    server.assert_called()
+    assert (
+        str(e.value)
+        == "Connection refused: GET https://sports.yahoo.co.jp/keiba/schedule/monthly?month=1&year=2018"
+    )
