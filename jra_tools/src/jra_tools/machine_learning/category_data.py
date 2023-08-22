@@ -10,7 +10,7 @@ def getCategoryData(kaisais: List[KaisaiData]) -> np.ndarray:
     return _convertToMatrix(categories)
 
 
-def _convertToMatrix(categories) -> np.ndarray:
+def _convertToMatrix(categories: List[np.ndarray]) -> np.ndarray:
     matrix = np.zeros([len(categories), 18, len(categories[0][0])])
     for raceNum in range(len(categories)):
         for horseNum in range(len(categories[raceNum])):
@@ -52,5 +52,5 @@ def _getCategory(
     )
 
 
-def _filterStrToInt(e):
-    return 0 if type(e) is str else e
+def _filterStrToInt(value):
+    return 0 if isinstance(value, str) else value
