@@ -2,14 +2,15 @@
 from typing import List
 import re
 from datetime import datetime
-import requests
+import asyncio
+import aiohttp
 from bs4 import BeautifulSoup
 
 YEAR = int(datetime.now().strftime("%Y"))
 MONTH = int(datetime.now().strftime("%m"))
 
 
-def annual_schedule(year: int = YEAR) -> List[int]:
+async def annual_schedule(year: int = YEAR) -> List[int]:
     """指定して年間スケジュールを取得する
 
     Args:
@@ -18,10 +19,12 @@ def annual_schedule(year: int = YEAR) -> List[int]:
     Returns:
         List[int]: 開催される日付一覧
     """
-    return [day for month in range(1, 13) for day in open_days(month, year)]
+    tasks = [open_days(month, year) for month in range(1, 13)]
+    months = await asyncio.gather(*tasks)
+    return [day for month in months for day in month]
 
 
-def open_days(month: int = MONTH, year: int = YEAR) -> List[int]:
+async def open_days(month: int = MONTH, year: int = YEAR) -> List[int]:
     """指定した年、月の開催一覧を取得する
 
     Args:
@@ -33,8 +36,14 @@ def open_days(month: int = MONTH, year: int = YEAR) -> List[int]:
     """
     base_url = "https://sports.yahoo.co.jp/keiba/schedule/monthly"
     payload = {"year": str(year), "month": str(month)}
-    soup = BeautifulSoup(requests.get(base_url, payload).text, "lxml")
+    soup = BeautifulSoup(await _fetch_html(base_url, payload), "lxml")
     return [int(f"{year:04d}{month:02d}{day:02d}") for day in _parse_to_days(soup)]
+
+
+async def _fetch_html(url, payload):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, params=payload) as response:
+            return await response.text()
 
 
 def _parse_to_days(soup: BeautifulSoup) -> List[int]:
