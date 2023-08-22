@@ -1,6 +1,7 @@
 """トレーニングに利用する関数"""
 from typing import List
 import numpy as np
+from functools import reduce
 from sklearn.preprocessing import StandardScaler
 from jrdb_model import KaisaiData, BangumiData, RacehorseData
 
@@ -44,10 +45,7 @@ def standardize(matrix: np.ndarray) -> np.ndarray:
 
 
 def numberOfRaces(kaisais: List[KaisaiData]) -> int:
-    num_race = 0
-    for kaisai in kaisais:
-        num_race += len(kaisai.races)
-    return num_race
+    return reduce(lambda x, y: x + len(y.races), kaisais)
 
 
 def numberOfScoreFeatures(kaisai: KaisaiData) -> int:
