@@ -1,9 +1,10 @@
 """開催データに紐づくデータを結合した状態でロードする"""
+from typing import List
 from sqlalchemy.orm import joinedload
 from jrdb_model import KaisaiData, app
 
 
-def get_kaisais(start: int, end: int) -> list[KaisaiData]:
+def get_kaisais(start: int, end: int) -> List[KaisaiData]:
     """指定した期間の開催データを取得する
 
     Args:

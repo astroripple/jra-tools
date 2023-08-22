@@ -1,10 +1,11 @@
-﻿import numpy as np
+﻿from typing import List
+import numpy as np
 from jrdb_model import KaisaiData
 from . import training_tool
 
 
 class LabelCreator:
-    def __init__(self, kaisais: list[KaisaiData]):
+    def __init__(self, kaisais: List[KaisaiData]):
         num_race = training_tool.numberOfRaces(kaisais)
         num_max_horse = 18
         self.t_icchaku = np.zeros([num_race, num_max_horse])

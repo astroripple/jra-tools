@@ -1,9 +1,11 @@
+"""トレーニングに利用する関数"""
+from typing import List
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from jrdb_model import KaisaiData, BangumiData, RacehorseData
 
 
-def createScoreDataMatrix(kaisais: list[KaisaiData]):
+def createScoreDataMatrix(kaisais: List[KaisaiData]):
     num_max_horse = 18
     num_race = numberOfRaces(kaisais)
     num_score = numberOfScoreFeatures(kaisais[0])
@@ -11,7 +13,7 @@ def createScoreDataMatrix(kaisais: list[KaisaiData]):
     return _setScores(baseMatrix, kaisais)
 
 
-def _setScores(score_data, kaisais: list[KaisaiData]):
+def _setScores(score_data, kaisais: List[KaisaiData]):
     w = 0
     for kaisai in kaisais:
         for race in kaisai.races:
@@ -39,7 +41,7 @@ def standardize(matrix):
     return sds
 
 
-def numberOfRaces(kaisais: list[KaisaiData]):
+def numberOfRaces(kaisais: List[KaisaiData]):
     num_race = 0
     for kaisai in kaisais:
         num_race += len(kaisai.races)

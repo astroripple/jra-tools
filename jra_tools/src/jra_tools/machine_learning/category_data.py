@@ -1,10 +1,11 @@
 """カテゴリ変数を取得する"""
+from typing import List
 import numpy as np
 from jrdb_model import KaisaiData, BangumiData, RacehorseData
 from .jrdbdummies import CategoryGetter
 
 
-def getCategoryData(kaisais: list[KaisaiData]) -> np.ndarray:
+def getCategoryData(kaisais: List[KaisaiData]) -> np.ndarray:
     categories = _getCategories(kaisais)
     return _convertToMatrix(categories)
 
@@ -17,7 +18,7 @@ def _convertToMatrix(categories) -> np.ndarray:
     return matrix
 
 
-def _getCategories(kaisais: list[KaisaiData]) -> list[np.ndarray]:
+def _getCategories(kaisais: List[KaisaiData]) -> List[np.ndarray]:
     return [
         _getRaceCategories(kaisai, race) for kaisai in kaisais for race in kaisai.races
     ]

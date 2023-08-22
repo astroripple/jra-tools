@@ -1,3 +1,4 @@
+from typing import List
 from jrdb_model import (
     PredictRaceData,
     PredictData,
@@ -10,7 +11,7 @@ from ..machine_learning.input_creator import InputCreator
 
 
 class PredictRaceUpdater:
-    def __init__(self, kaisais: list[KaisaiData]):
+    def __init__(self, kaisais: List[KaisaiData]):
         self.kaisais = kaisais
 
     def updatePredict(self, model):
@@ -126,7 +127,7 @@ class PredictRaceUpdater:
                 pp += 1 / self.umarenOdds(horse1, horse2)
         return 1 / pp
 
-    def wakurenSameOdds(self, horses: list[RacehorseData]):
+    def wakurenSameOdds(self, horses: List[RacehorseData]):
         if len(horses) <= 1:
             return 0
         pp = 0
