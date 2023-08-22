@@ -5,7 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from jrdb_model import KaisaiData, BangumiData, RacehorseData
 
 
-def createScoreDataMatrix(kaisais: List[KaisaiData]):
+def createScoreDataMatrix(kaisais: List[KaisaiData]) -> np.ndarray:
     num_max_horse = 18
     num_race = numberOfRaces(kaisais)
     num_score = numberOfScoreFeatures(kaisais[0])
@@ -13,7 +13,7 @@ def createScoreDataMatrix(kaisais: List[KaisaiData]):
     return _setScores(baseMatrix, kaisais)
 
 
-def _setScores(score_data, kaisais: List[KaisaiData]):
+def _setScores(score_data: np.ndarray, kaisais: List[KaisaiData]) -> np.ndarray:
     w = 0
     for kaisai in kaisais:
         for race in kaisai.races:
@@ -23,7 +23,9 @@ def _setScores(score_data, kaisais: List[KaisaiData]):
     return score_data
 
 
-def _setRaceScores(matrix, race: BangumiData, raceNum: int, kaisaiScores):
+def _setRaceScores(
+    matrix: np.ndarray, race: BangumiData, raceNum: int, kaisaiScores
+) -> np.ndarray:
     raceScores = kaisaiScores
     raceScores.append(race.num_of_all_horse)
     for horse in race.racehorses:
@@ -32,7 +34,7 @@ def _setRaceScores(matrix, race: BangumiData, raceNum: int, kaisaiScores):
     return matrix
 
 
-def standardize(matrix):
+def standardize(matrix: np.ndarray) -> np.ndarray:
     sds = matrix
     for i in range(len(matrix)):
         ss = StandardScaler()
@@ -41,21 +43,23 @@ def standardize(matrix):
     return sds
 
 
-def numberOfRaces(kaisais: List[KaisaiData]):
+def numberOfRaces(kaisais: List[KaisaiData]) -> int:
     num_race = 0
     for kaisai in kaisais:
         num_race += len(kaisai.races)
     return num_race
 
 
-def numberOfScoreFeatures(kaisai: KaisaiData):
+def numberOfScoreFeatures(kaisai: KaisaiData) -> int:
     dummyScores = _addKaisaiScores([], kaisai)
     dummyScores.append(kaisai.races[0].num_of_all_horse)
     dummyScores = _addHorseScores(dummyScores, kaisai.races[0].racehorses[0])
     return len(dummyScores)
 
 
-def _setScoreData(matrix, raceNum: int, horseNum: int, scores):
+def _setScoreData(
+    matrix: np.ndarray, raceNum: int, horseNum: int, scores: List
+) -> np.ndarray:
     features = len(matrix[raceNum, horseNum])
     if features != len(scores):
         raise RuntimeError("特徴量の数と行列の次元数が一致しません")
@@ -64,7 +68,7 @@ def _setScoreData(matrix, raceNum: int, horseNum: int, scores):
     return matrix
 
 
-def _addKaisaiScores(scores, kaisai: KaisaiData):
+def _addKaisaiScores(scores: List, kaisai: KaisaiData) -> List:
     return scores + [
         kaisai.turf_baba_in,
         kaisai.turf_baba_center,
@@ -85,7 +89,7 @@ def _addKaisaiScores(scores, kaisai: KaisaiData):
     ]
 
 
-def _addHorseScores(scores, horse: RacehorseData):
+def _addHorseScores(scores: List, horse: RacehorseData) -> List:
     horseScores = [
         horse.idm,
         horse.jockey_score,
@@ -154,5 +158,5 @@ def _addHorseScores(scores, horse: RacehorseData):
     return scores + _filterStringToInt(horseScores)
 
 
-def _filterStringToInt(scores):
+def _filterStringToInt(scores: List) -> List[int]:
     return [0 if type(score) is str else score for score in scores]
