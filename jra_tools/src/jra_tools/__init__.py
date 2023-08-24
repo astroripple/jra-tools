@@ -1,7 +1,9 @@
+"""パッケージから直接インポート可能なモジュール"""
 from .database.bao_importer import *
 from .database.db_checker import *
 from .database.schedule import *
-from .database.pred_race_updater import *
+from .database.predict_factory import *
+from .database.predict_race_factory import *
 
 from .machine_learning.category_data import *
 from .machine_learning.input_creator import *

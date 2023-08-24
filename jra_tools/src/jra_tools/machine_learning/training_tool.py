@@ -8,7 +8,7 @@ from jrdb_model import KaisaiData, BangumiData, RacehorseData
 
 def createScoreDataMatrix(kaisais: List[KaisaiData]) -> np.ndarray:
     num_max_horse = 18
-    num_race = numberOfRaces(kaisais)
+    num_race = reduce(lambda x, y: x + len(y.races), kaisais, 0)
     num_score = numberOfScoreFeatures(kaisais[0])
     baseMatrix = np.zeros([num_race, num_max_horse, num_score])
     return _setScores(baseMatrix, kaisais)
@@ -42,10 +42,6 @@ def standardize(matrix: np.ndarray) -> np.ndarray:
         ss.fit(matrix[i])
         sds[i] = ss.transform(matrix[i])
     return sds
-
-
-def numberOfRaces(kaisais: List[KaisaiData]) -> int:
-    return reduce(lambda x, y: x + len(y.races), kaisais)
 
 
 def numberOfScoreFeatures(kaisai: KaisaiData) -> int:
