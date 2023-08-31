@@ -7,6 +7,14 @@ from jrdb_model import KaisaiData, BangumiData, RacehorseData
 
 
 def create_score_data_matrix(kaisais: List[KaisaiData]) -> np.ndarray:
+    """開催データからトレーニング用データマトリクスを作成する
+
+    Args:
+        kaisais (List[KaisaiData]): 開催データ
+
+    Returns:
+        np.ndarray: 数値データ行列
+    """
     num_max_horse = 18
     num_race = reduce(lambda x, y: x + len(y.races), kaisais, 0)
     num_score = numberOfScoreFeatures(kaisais[0])
