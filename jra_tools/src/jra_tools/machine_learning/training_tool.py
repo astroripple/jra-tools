@@ -1,12 +1,12 @@
 """トレーニングに利用する関数"""
 from typing import List
-import numpy as np
 from functools import reduce
+import numpy as np
 from sklearn.preprocessing import StandardScaler
 from jrdb_model import KaisaiData, BangumiData, RacehorseData
 
 
-def createScoreDataMatrix(kaisais: List[KaisaiData]) -> np.ndarray:
+def create_score_data_matrix(kaisais: List[KaisaiData]) -> np.ndarray:
     num_max_horse = 18
     num_race = reduce(lambda x, y: x + len(y.races), kaisais, 0)
     num_score = numberOfScoreFeatures(kaisais[0])
