@@ -47,18 +47,7 @@ def _get_category(
     kaisai: KaisaiData, race: BangumiData, horse: RacehorseData
 ) -> np.ndarray:
     cg = CategoryGetter()
-    return np.hstack(
-        (
-            cg.getTennatsu(kaisai.tennatsu),
-            cg.getDistance(race.distance),
-            cg.getBacode(horse.bacode),
-            cg.getNum(horse.num),
-            cg.getWaku(horse.waku),
-            cg.getTorikeshi(_filter_str_to_int(horse.torikeshi)),
-            cg.getBanushikaicode(_filter_str_to_int(horse.banushikai_code)),
-            cg.getTraintype(_filter_str_to_int(horse.trainanalysis.train_type)),
-        )
-    )
+    return np.hstack((cg.getWaku(horse.waku),))
 
 
 def _filter_str_to_int(value):
