@@ -17,33 +17,41 @@ def create_score_data_matrix(kaisais: List[KaisaiData]) -> np.ndarray:
     """
     num_max_horse = 18
     num_race = reduce(lambda x, y: x + len(y.races), kaisais, 0)
-    num_score = numberOfScoreFeatures(kaisais[0])
-    baseMatrix = np.zeros([num_race, num_max_horse, num_score])
-    return _setScores(baseMatrix, kaisais)
+    num_score = number_of_score_features(kaisais[0])
+    base_matrix = np.zeros([num_race, num_max_horse, num_score])
+    return _set_scores(base_matrix, kaisais)
 
 
-def _setScores(score_data: np.ndarray, kaisais: List[KaisaiData]) -> np.ndarray:
+def _set_scores(score_data: np.ndarray, kaisais: List[KaisaiData]) -> np.ndarray:
     w = 0
     for kaisai in kaisais:
         for race in kaisai.races:
-            scores = _addKaisaiScores([], kaisai)
-            score_data = _setRaceScores(score_data, race, w, scores)
+            scores = _add_kaisai_scores([], kaisai)
+            score_data = _set_race_scores(score_data, race, w, scores)
             w = w + 1
     return score_data
 
 
-def _setRaceScores(
-    matrix: np.ndarray, race: BangumiData, raceNum: int, kaisaiScores
+def _set_race_scores(
+    matrix: np.ndarray, race: BangumiData, race_num: int, kaisai_scores
 ) -> np.ndarray:
-    raceScores = kaisaiScores
-    raceScores.append(race.num_of_all_horse)
+    race_scores = kaisai_scores
+    race_scores.append(race.num_of_all_horse)
     for horse in race.racehorses:
-        scores = _addHorseScores(raceScores, horse)
-        matrix = _setScoreData(matrix, raceNum, horse.num - 1, scores)
+        scores = _add_horse_scores(race_scores, horse)
+        matrix = _set_score_data(matrix, race_num, horse.num - 1, scores)
     return matrix
 
 
 def standardize(matrix: np.ndarray) -> np.ndarray:
+    """行列に標準化処理を施す
+
+    Args:
+        matrix (np.ndarray): 数値データ行列_
+
+    Returns:
+        np.ndarray: 標準化済み行列
+    """
     sds = matrix
     for i in range(len(matrix)):
         ss = StandardScaler()
@@ -52,25 +60,25 @@ def standardize(matrix: np.ndarray) -> np.ndarray:
     return sds
 
 
-def numberOfScoreFeatures(kaisai: KaisaiData) -> int:
-    dummyScores = _addKaisaiScores([], kaisai)
+def number_of_score_features(kaisai: KaisaiData) -> int:
+    dummyScores = _add_kaisai_scores([], kaisai)
     dummyScores.append(kaisai.races[0].num_of_all_horse)
-    dummyScores = _addHorseScores(dummyScores, kaisai.races[0].racehorses[0])
+    dummyScores = _add_horse_scores(dummyScores, kaisai.races[0].racehorses[0])
     return len(dummyScores)
 
 
-def _setScoreData(
-    matrix: np.ndarray, raceNum: int, horseNum: int, scores: List
+def _set_score_data(
+    matrix: np.ndarray, race_num: int, horse_num: int, scores: List
 ) -> np.ndarray:
-    features = len(matrix[raceNum, horseNum])
+    features = len(matrix[race_num, horse_num])
     if features != len(scores):
         raise RuntimeError("特徴量の数と行列の次元数が一致しません")
     for s in range(features):
-        matrix[raceNum, horseNum, s] = scores[s]
+        matrix[race_num, horse_num, s] = scores[s]
     return matrix
 
 
-def _addKaisaiScores(scores: List, kaisai: KaisaiData) -> List:
+def _add_kaisai_scores(scores: List, kaisai: KaisaiData) -> List:
     return scores + [
         kaisai.turf_baba_in,
         kaisai.turf_baba_center,
@@ -91,8 +99,8 @@ def _addKaisaiScores(scores: List, kaisai: KaisaiData) -> List:
     ]
 
 
-def _addHorseScores(scores: List, horse: RacehorseData) -> List:
-    horseScores = [
+def _add_horse_scores(scores: List, horse: RacehorseData) -> List:
+    horse_scores = [
         horse.idm,
         horse.jockey_score,
         horse.info_score,
@@ -157,8 +165,8 @@ def _addHorseScores(scores: List, horse: RacehorseData) -> List:
         horse.trainoikiri.end_f_score,
         horse.trainoikiri.oikiri_score,
     ]
-    return scores + _filterStringToInt(horseScores)
+    return scores + _filter_string_to_int(horse_scores)
 
 
-def _filterStringToInt(scores: List) -> List[int]:
+def _filter_string_to_int(scores: List) -> List[int]:
     return [0 if type(score) is str else score for score in scores]
