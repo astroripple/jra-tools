@@ -20,9 +20,9 @@ def get_category_data(kaisais: List[KaisaiData]) -> np.ndarray:
 
 def _convert_to_matrix(categories: List[np.ndarray]) -> np.ndarray:
     matrix = np.zeros([len(categories), 18, len(categories[0][0])])
-    for raceNum in range(len(categories)):
-        for horseNum in range(len(categories[raceNum])):
-            matrix[raceNum][horseNum] = categories[raceNum][horseNum]
+    for race_num, race in enumerate(categories):
+        for horse_num, horse in enumerate(race):
+            matrix[race_num][horse_num] = horse
     return matrix
 
 
