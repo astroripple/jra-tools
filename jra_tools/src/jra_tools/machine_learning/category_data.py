@@ -5,52 +5,49 @@ from jrdb_model import KaisaiData, BangumiData, RacehorseData
 from .jrdbdummies import CategoryGetter
 
 
-def getCategoryData(kaisais: List[KaisaiData]) -> np.ndarray:
-    categories = _getCategories(kaisais)
-    return _convertToMatrix(categories)
+def get_category_data(kaisais: List[KaisaiData]) -> np.ndarray:
+    """開催データからカテゴリデータを取得する
+
+    Args:
+        kaisais (List[KaisaiData]): 開催データ
+
+    Returns:
+        np.ndarray: 開催データマトリクス
+    """
+    return _convert_to_matrix(_get_categories(kaisais))
 
 
-def _convertToMatrix(categories: List[np.ndarray]) -> np.ndarray:
+def _convert_to_matrix(categories: List[np.ndarray]) -> np.ndarray:
     matrix = np.zeros([len(categories), 18, len(categories[0][0])])
-    for raceNum in range(len(categories)):
-        for horseNum in range(len(categories[raceNum])):
-            matrix[raceNum][horseNum] = categories[raceNum][horseNum]
+    for race_num, race in enumerate(categories):
+        for horse_num, horse in enumerate(race):
+            matrix[race_num][horse_num] = horse
     return matrix
 
 
-def _getCategories(kaisais: List[KaisaiData]) -> List[np.ndarray]:
+def _get_categories(kaisais: List[KaisaiData]) -> List[np.ndarray]:
     return [
-        _getRaceCategories(kaisai, race) for kaisai in kaisais for race in kaisai.races
+        _get_race_categories(kaisai, race)
+        for kaisai in kaisais
+        for race in kaisai.races
     ]
 
 
-def _getRaceCategories(kaisai: KaisaiData, race: BangumiData) -> np.ndarray:
-    horses = sorted(race.racehorses, key=lambda h: h.racehorsekey)
-    for horse in horses:
+def _get_race_categories(kaisai: KaisaiData, race: BangumiData) -> np.ndarray:
+    for horse in sorted(race.racehorses, key=lambda h: h.racehorsekey):
         if horse.num == 1:
-            dummies = _getCategory(kaisai, race, horse)
+            dummies = _get_category(kaisai, race, horse)
         else:
-            dummies = np.vstack((dummies, _getCategory(kaisai, race, horse)))
+            dummies = np.vstack((dummies, _get_category(kaisai, race, horse)))
     return dummies
 
 
-def _getCategory(
+def _get_category(
     kaisai: KaisaiData, race: BangumiData, horse: RacehorseData
 ) -> np.ndarray:
     cg = CategoryGetter()
-    return np.hstack(
-        (
-            cg.getTennatsu(kaisai.tennatsu),
-            cg.getDistance(race.distance),
-            cg.getBacode(horse.bacode),
-            cg.getNum(horse.num),
-            cg.getWaku(horse.waku),
-            cg.getTorikeshi(_filterStrToInt(horse.torikeshi)),
-            cg.getBanushikaicode(_filterStrToInt(horse.banushikai_code)),
-            cg.getTraintype(_filterStrToInt(horse.trainanalysis.train_type)),
-        )
-    )
+    return np.hstack((cg.getWaku(horse.waku),))
 
 
-def _filterStrToInt(value):
+def _filter_str_to_int(value):
     return 0 if isinstance(value, str) else value
