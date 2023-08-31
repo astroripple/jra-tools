@@ -14,8 +14,7 @@ def get_category_data(kaisais: List[KaisaiData]) -> np.ndarray:
     Returns:
         np.ndarray: 開催データマトリクス
     """
-    categories = _get_categories(kaisais)
-    return _convert_to_matrix(categories)
+    return _convert_to_matrix(_get_categories(kaisais))
 
 
 def _convert_to_matrix(categories: List[np.ndarray]) -> np.ndarray:
