@@ -64,7 +64,7 @@ def standardize(matrix: np.ndarray) -> np.ndarray:
 
 
 def number_of_score_features(kaisai: KaisaiData) -> int:
-    dummyScores = _add_kaisai_scores([], kaisai)
+    dummyScores = _kaisai_scores(kaisai)
     dummyScores.append(kaisai.races[0].num_of_all_horse)
     dummyScores = _add_horse_scores(dummyScores, kaisai.races[0].racehorses[0])
     return len(dummyScores)
