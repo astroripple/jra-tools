@@ -53,10 +53,10 @@ def standardize(matrix: np.ndarray) -> np.ndarray:
         np.ndarray: 標準化済み行列
     """
     sds = matrix
-    for i in range(len(matrix)):
+    for i, element in enumerate(matrix):
         ss = StandardScaler()
-        ss.fit(matrix[i])
-        sds[i] = ss.transform(matrix[i])
+        ss.fit(element)
+        sds[i] = ss.transform(element)
     return sds
 
 
