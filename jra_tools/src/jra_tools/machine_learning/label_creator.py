@@ -1,12 +1,15 @@
-﻿from typing import List
+﻿"""ラベルを作成する"""
+from typing import List
+from functools import reduce
 import numpy as np
 from jrdb_model import KaisaiData
-from . import training_tool
 
 
 class LabelCreator:
+    """ラベル作成クラス"""
+
     def __init__(self, kaisais: List[KaisaiData]):
-        num_race = training_tool.numberOfRaces(kaisais)
+        num_race = reduce(lambda x, y: x + len(y.races), kaisais, 0)
         num_max_horse = 18
         self.t_icchaku = np.zeros([num_race, num_max_horse])
         self.t_nichaku = np.zeros([num_race, num_max_horse])
