@@ -35,8 +35,7 @@ def _get_categories(kaisais: List[KaisaiData]) -> List[np.ndarray]:
 
 
 def _get_race_categories(kaisai: KaisaiData, race: BangumiData) -> np.ndarray:
-    horses = sorted(race.racehorses, key=lambda h: h.racehorsekey)
-    for horse in horses:
+    for horse in sorted(race.racehorses, key=lambda h: h.racehorsekey):
         if horse.num == 1:
             dummies = _get_category(kaisai, race, horse)
         else:
