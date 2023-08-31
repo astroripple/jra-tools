@@ -29,7 +29,7 @@ def _set_scores(score_data: np.ndarray, kaisais: List[KaisaiData]) -> np.ndarray
     w = 0
     for kaisai in kaisais:
         for race in kaisai.races:
-            scores = _add_kaisai_scores([], kaisai)
+            scores = _kaisai_scores(kaisai)
             score_data = _set_race_scores(score_data, race, w, scores)
             w = w + 1
     return score_data
@@ -81,8 +81,8 @@ def _set_score_data(
     return matrix
 
 
-def _add_kaisai_scores(scores: List, kaisai: KaisaiData) -> List:
-    return scores + [
+def _kaisai_scores(kaisai: KaisaiData) -> List:
+    return [
         kaisai.turf_baba_in,
         kaisai.turf_baba_center,
         kaisai.turf_baba_out,
