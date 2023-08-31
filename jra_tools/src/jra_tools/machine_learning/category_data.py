@@ -6,6 +6,14 @@ from .jrdbdummies import CategoryGetter
 
 
 def get_category_data(kaisais: List[KaisaiData]) -> np.ndarray:
+    """開催データからカテゴリデータを取得する
+
+    Args:
+        kaisais (List[KaisaiData]): 開催データ
+
+    Returns:
+        np.ndarray: 開催データマトリクス
+    """
     categories = _getCategories(kaisais)
     return _convertToMatrix(categories)
 
