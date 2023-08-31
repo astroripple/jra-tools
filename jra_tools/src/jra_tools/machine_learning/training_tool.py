@@ -38,11 +38,15 @@ def _set_scores(score_data: np.ndarray, kaisais: List[KaisaiData]) -> np.ndarray
 def _set_race_scores(
     matrix: np.ndarray, race: BangumiData, race_num: int, kaisai_scores
 ) -> np.ndarray:
-    race_scores = kaisai_scores
-    race_scores.append(race.num_of_all_horse)
+    scores = kaisai_scores
+    scores += _race_scores(race)
     for horse in race.racehorses:
-        scores = _add_horse_scores(race_scores, horse)
-        matrix = _set_score_data(matrix, race_num, horse.num - 1, scores)
+        matrix = _set_score_data(
+            matrix,
+            race_num,
+            horse.num - 1,
+            _filter_string_to_int(scores + _horse_scores(horse)),
+        )
     return matrix
 
 
@@ -102,8 +106,12 @@ def _kaisai_scores(kaisai: KaisaiData) -> List:
     ]
 
 
-def _add_horse_scores(scores: List, horse: RacehorseData) -> List:
-    horse_scores = [
+def _race_scores(race: BangumiData):
+    return [race.num_of_all_horse]
+
+
+def _horse_scores(horse: RacehorseData) -> List:
+    return [
         horse.idm,
         horse.jockey_score,
         horse.info_score,
@@ -168,7 +176,6 @@ def _add_horse_scores(scores: List, horse: RacehorseData) -> List:
         horse.trainoikiri.end_f_score,
         horse.trainoikiri.oikiri_score,
     ]
-    return scores + _filter_string_to_int(horse_scores)
 
 
 def _filter_string_to_int(scores: List) -> List[int]:
