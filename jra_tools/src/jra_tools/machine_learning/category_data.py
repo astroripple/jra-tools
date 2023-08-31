@@ -5,7 +5,7 @@ from jrdb_model import KaisaiData, BangumiData, RacehorseData
 from .jrdbdummies import CategoryGetter
 
 
-def getCategoryData(kaisais: List[KaisaiData]) -> np.ndarray:
+def get_category_data(kaisais: List[KaisaiData]) -> np.ndarray:
     categories = _getCategories(kaisais)
     return _convertToMatrix(categories)
 
