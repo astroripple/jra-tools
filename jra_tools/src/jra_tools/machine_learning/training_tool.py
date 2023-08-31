@@ -29,8 +29,7 @@ def _set_scores(score_data: np.ndarray, kaisais: List[KaisaiData]) -> np.ndarray
     w = 0
     for kaisai in kaisais:
         for race in kaisai.races:
-            scores = _kaisai_scores(kaisai)
-            score_data = _set_race_scores(score_data, race, w, scores)
+            score_data = _set_race_scores(score_data, race, w, _kaisai_scores(kaisai))
             w = w + 1
     return score_data
 
@@ -188,4 +187,4 @@ def _horse_scores(horse: RacehorseData) -> List:
 
 
 def _filter_string_to_int(scores: List) -> List[int]:
-    return [0 if type(score) is str else score for score in scores]
+    return [0 if isinstance(score, str) else score for score in scores]
