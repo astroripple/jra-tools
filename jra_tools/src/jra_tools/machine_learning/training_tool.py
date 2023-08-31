@@ -68,10 +68,19 @@ def standardize(matrix: np.ndarray) -> np.ndarray:
 
 
 def number_of_score_features(kaisai: KaisaiData) -> int:
-    dummyScores = _kaisai_scores(kaisai)
-    dummyScores.append(kaisai.races[0].num_of_all_horse)
-    dummyScores = _add_horse_scores(dummyScores, kaisai.races[0].racehorses[0])
-    return len(dummyScores)
+    """開催データから特徴量の数量を取得する
+
+    Args:
+        kaisai (KaisaiData): 開催データ
+
+    Returns:
+        int: 特徴量の数
+    """
+    return len(
+        _kaisai_scores(kaisai)
+        + _race_scores(kaisai.races[0])
+        + _horse_scores(kaisai.races[0].racehorses[0])
+    )
 
 
 def _set_score_data(
