@@ -13,12 +13,15 @@ def create_score_data_matrix(kaisais: List[KaisaiData]) -> np.ndarray:
         kaisais (List[KaisaiData]): 開催データ
 
     Returns:
-        np.ndarray: 数値データ行列
+        np.ndarray: 数値データ行列[レース, 馬, 特徴量]
     """
-    num_max_horse = 18
-    num_race = reduce(lambda x, y: x + len(y.races), kaisais, 0)
-    num_score = number_of_score_features(kaisais[0])
-    base_matrix = np.zeros([num_race, num_max_horse, num_score])
+    base_matrix = np.zeros(
+        [
+            reduce(lambda x, y: x + len(y.races), kaisais, 0),
+            18,
+            number_of_score_features(kaisais[0]),
+        ]
+    )
     return _set_scores(base_matrix, kaisais)
 
 
