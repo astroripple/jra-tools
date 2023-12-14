@@ -1,6 +1,5 @@
 """開催データに紐づくデータを結合した状態でロードする"""
 from typing import List
-from sqlalchemy.orm import joinedload
 from jrdb_model import KaisaiData, app
 
 
@@ -16,7 +15,5 @@ def get_kaisais(start: int, end: int) -> List[KaisaiData]:
     """
     with app.app_context():
         return (
-            KaisaiData.query.filter(KaisaiData.ymd >= start, KaisaiData.ymd <= end)
-            .options(joinedload("*"))
-            .all()
+            KaisaiData.query.filter(KaisaiData.ymd >= start, KaisaiData.ymd <= end).all()
         )
