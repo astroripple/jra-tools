@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/devcontainers/python:1.1.3-3.8-bookworm
-RUN apt-get -y update && pip install --upgrade pip
+ENV DB=mariadb+pymysql://user:pass@host_name/database_name
 WORKDIR /home
 COPY . /home/
-RUN pip install /home/jra_tools && \
+RUN apt-get -y update && pip install --upgrade pip && \
+    pip install /home/jra_tools && \
     pip install pytest pytest-mock pymysql pylint-pytest pytest-asyncio aioresponses
