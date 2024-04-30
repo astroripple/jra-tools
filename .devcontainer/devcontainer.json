@@ -11,10 +11,11 @@
 	// "runArgs": ["--network=host", "--rm", "--env-file",".devcontainer/devcontainer.env"],
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
-
+	"mounts": [
+		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-
 	// Uncomment the next line to run commands after the container is created.
 	// "postCreateCommand": "apt-get install -y git",
 	// Configure tool-specific properties.
@@ -22,8 +23,13 @@
 		"vscode": {
 			"settings": {
 				"python.pythonPath": "/usr/local/bin/python",
-				"python.analysis.extraPaths": ["/usr/local/lib/python3.8/site-packages"],
-				"pylint.args": ["--load-plugins", "pylint_pytest"],
+				"python.analysis.extraPaths": [
+					"/usr/local/lib/python3.8/site-packages"
+				],
+				"pylint.args": [
+					"--load-plugins",
+					"pylint_pytest"
+				],
 				"python.analysis.typeCheckingMode": "basic",
 				"python.analysis.completeFunctionParens": true,
 				"[python]": {
@@ -33,20 +39,21 @@
 				"remote.SSH.remoteServerListenOnSocket": true,
 				"dev.containers.copyGitConfig": true,
 				"python.testing.pytestArgs": [
-					"--fixtures","--collect-only","tests"
+					"--fixtures",
+					"--collect-only",
+					"tests"
 				],
 				"python.testing.unittestEnabled": false,
-				"python.testing.pytestEnabled": true			
+				"python.testing.pytestEnabled": true
 			},
 			"extensions": [
 				"ms-python.python",
 				"ms-python.black-formatter",
 				"ms-python.pylint",
 				"njpwerner.autodocstring"
-			 ]		
+			]
 		}
 	},
-
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "devcontainer"
 }
