@@ -1,13 +1,17 @@
 """開催データ大量ロードモジュールのユニットテスト"""
 
+from unittest.mock import MagicMock
 from pytest_mock import MockerFixture
+from pytest import fixture
 
 
-def test_load(mocker: MockerFixture):
+@fixture
+def mock_get_kaisais(mocker: MockerFixture) -> MagicMock:
+    return mocker.patch("jra_tools.machine_learning.kaisai_loader.get_kaisais")
+
+
+def test_load(mock_get_kaisais: MagicMock):
     """get_kaisaisを複数回に分けで呼び出すことを確認する"""
-    mock_get_kaisais = mocker.patch(
-        "jra_tools.machine_learning.kaisai_loader.get_kaisais"
-    )
     # pylint: disable=import-outside-toplevel
     from jra_tools.machine_learning.kaisai_loader import load
 
