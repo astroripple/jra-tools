@@ -20,7 +20,7 @@ def load(start: int, end: int) -> List[KaisaiData]:
 
     periods = [
         (s, dt.datetime(year=s.year, month=12, day=31)),
-        *[_period(s.year + i) for i in range(1, int((e - s).days / 365) - 1)],
+        *[_period(i) for i in range(s.year + 1, e.year)],
         (dt.datetime(year=e.year, month=1, day=1), e),
     ]
     return [
