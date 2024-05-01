@@ -13,7 +13,7 @@ def load(start: int, end: int) -> List[KaisaiData]:
         end (int): YYYYMMDD
 
     Returns:
-        List[KaisaiData]: _description_
+        List[KaisaiData]: 開催データ一覧
     """
     return [
         kaisai
@@ -30,8 +30,9 @@ def _periods(s: dt.datetime, e: dt.datetime) -> List[Tuple[dt.datetime, dt.datet
             (dt.datetime(year=e.year, month=1, day=1), e),
         ]
     if s.year == e.year:
-        return [(s, e)]
-    raise RuntimeError("開始日 < 終了日となるように入力してください")
+        if s <= e:
+            return [(s, e)]
+    raise RuntimeError("開始日 <= 終了日となるように入力してください")
 
 
 def _period(year: int) -> Tuple[dt.datetime, dt.datetime]:
