@@ -8,6 +8,7 @@ def test_load(mocker: MockerFixture):
     mock_get_kaisais = mocker.patch(
         "jra_tools.machine_learning.kaisai_loader.get_kaisais"
     )
+    # pylint: disable=import-outside-toplevel
     from jra_tools.machine_learning.kaisai_loader import load
 
     load(20120101, 20151231)
