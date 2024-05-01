@@ -15,19 +15,23 @@ def load(start: int, end: int) -> List[KaisaiData]:
     Returns:
         List[KaisaiData]: _description_
     """
-    s = _to_date(start)
-    e = _to_date(end)
-
-    periods = [
-        (s, dt.datetime(year=s.year, month=12, day=31)),
-        *[_period(i) for i in range(s.year + 1, e.year)],
-        (dt.datetime(year=e.year, month=1, day=1), e),
-    ]
     return [
         kaisai
-        for start_date, end_date in periods
+        for start_date, end_date in _periods(_to_date(start), _to_date(end))
         for kaisai in get_kaisais(_to_int(start_date), _to_int(end_date))
     ]
+
+
+def _periods(s: dt.datetime, e: dt.datetime) -> List[Tuple[dt.datetime, dt.datetime]]:
+    if s.year < e.year:
+        return [
+            (s, dt.datetime(year=s.year, month=12, day=31)),
+            *[_period(i) for i in range(s.year + 1, e.year)],
+            (dt.datetime(year=e.year, month=1, day=1), e),
+        ]
+    if s.year == e.year:
+        return [(s, e)]
+    raise RuntimeError("開始日 < 終了日となるように入力してください")
 
 
 def _period(year: int) -> Tuple[dt.datetime, dt.datetime]:
