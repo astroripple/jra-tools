@@ -11,13 +11,13 @@ def test_load(mocker: MockerFixture):
     # pylint: disable=import-outside-toplevel
     from jra_tools.machine_learning.kaisai_loader import load
 
-    load(20120101, 20151231)
+    load(20120501, 20150925)
 
     expected_args = (
-        (20120101, 20121231),
+        (20120501, 20121231),
         (20130101, 20131231),
         (20140101, 20141231),
-        (20150101, 20151231),
+        (20150101, 20150925),
     )
     assert mock_get_kaisais.call_count == 4
     for call, args in zip(mock_get_kaisais.call_args_list, expected_args):
