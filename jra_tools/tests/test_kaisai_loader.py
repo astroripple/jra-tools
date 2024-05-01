@@ -26,3 +26,16 @@ def test_load(mock_get_kaisais: MagicMock):
     assert mock_get_kaisais.call_count == 4
     for call, args in zip(mock_get_kaisais.call_args_list, expected_args):
         assert call.args == args
+
+
+def test_load_in_oneyear(mock_get_kaisais: MagicMock):
+    """get_kaisaisを1回呼び出すことを確認する"""
+    # pylint: disable=import-outside-toplevel
+    from jra_tools.machine_learning.kaisai_loader import load
+
+    load(20120501, 20120925)
+
+    expected_args = ((20120501, 20120925),)
+    assert mock_get_kaisais.call_count == 1
+    for call, args in zip(mock_get_kaisais.call_args_list, expected_args):
+        assert call.args == args
