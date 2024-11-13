@@ -37,3 +37,12 @@ include-package-data = false
 [tool.setuptools.packages.find]
 where = ["src"]
 namespaces = false
+
+[dependency-groups]
+dev = [
+    "aioresponses>=0.7.6",
+    "pymysql>=1.1.1",
+    "pytest-asyncio>=0.24.0",
+    "pytest-mock>=3.14.0",
+    "pytest>=8.3.3",
+]
