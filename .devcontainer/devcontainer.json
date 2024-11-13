@@ -23,6 +23,16 @@
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
+			"settings": {
+				"editor.renderWhitespace": "all",
+				"python.defaultInterpreterPath": ".venv/bin/python",
+				"python.testing.pytestArgs": [
+					"tests",
+					"--capture=tee-sys",
+					"-vv"
+				],
+				"python.testing.pytestEnabled": true,
+			},
 			"extensions": [
 				"ms-python.python",
 				"ms-python.black-formatter",
