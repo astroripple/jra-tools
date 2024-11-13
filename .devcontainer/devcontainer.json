@@ -10,7 +10,9 @@
 	},
 	// "runArgs": ["--network=host", "--rm", "--env-file",".devcontainer/devcontainer.env"],
 	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
+	"features": {
+		"ghcr.io/jsburckhardt/devcontainer-features/uv:1": {}
+	},
 	"mounts": [
 		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
 	],
