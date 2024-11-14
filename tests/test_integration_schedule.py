@@ -1,6 +1,6 @@
 """Yahoo競馬のクローラー結合テスト"""
 from asyncio import run
-from src.jra_tools.database.schedule import open_days
+from jra_tools.database.schedule import open_days
 
 
 def test_open_days():

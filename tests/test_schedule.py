@@ -1,10 +1,11 @@
 """Yahoo競馬のクローラーテスト"""
+
 import pickle
 from typing import Generator
 import pytest
 from aiohttp.client_exceptions import ClientConnectionError
 from aioresponses import aioresponses
-from src.jra_tools.database.schedule import open_days, annual_schedule
+from jra_tools.database.schedule import open_days, annual_schedule
 
 
 @pytest.fixture
@@ -15,7 +16,7 @@ def server() -> Generator[aioresponses, None, None]:
         Generator[aioresponses, None, None]: _description_
     """
     with aioresponses() as m:
-        with open("jra_tools/tests/yahoo_keiba.pkl", mode="rb") as f:
+        with open("tests/yahoo_keiba.pkl", mode="rb") as f:
             m.get(
                 "https://sports.yahoo.co.jp/keiba/schedule/monthly?month=12&year=2018",
                 status=200,
