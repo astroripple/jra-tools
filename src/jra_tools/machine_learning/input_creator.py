@@ -41,9 +41,22 @@ def create_training_input_data(start: int, end: int):
     try:
         kaisais = load(int(f"{start}0101"), int(f"{end}1231"))
         period = "data" if start == 2012 and end == 2018 else f"{start}_{end}"
-        ic = InputCreator(kaisais)
-        ic.save(f"x_{period}.dump")
+        _save_x(kaisais, period)
     except Exception as e:
         raise RuntimeError(
             "トレーニングの入力データの作成中にエラーが発生しました"
         ) from e
+
+
+def _save_x(kaisais, period: str):
+    ic = InputCreator(kaisais)
+    ic.save(f"x_{period}.dump")
+
+
+def _save_payout(kaisais, period: str):
+    from jra_tools import create_payout
+
+    payout = create_payout(kaisais)
+
+    with open(f"payout_{period}.dump", "wb") as f:
+        payout.dump(f)
