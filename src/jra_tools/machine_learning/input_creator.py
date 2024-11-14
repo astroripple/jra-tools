@@ -51,16 +51,18 @@ def create_quarter_dataset(year: int, quarter: int, only_input: bool = True) -> 
         quarter (int): 1 - 4
         only_input (bool, optional): 入力データのみを作成するか. Defaults to True.
     """
+    _start, _end, period = _quarter_period(year, quarter)
+    _create_dataset(_start, _end, period, only_input)
+
+
+def _quarter_period(year: int, quarter: int):
     start_month = int(12 / 4 * (quarter - 1) + 1)
     end_month = start_month + 2
-    from jra_tools import load
-
-    kaisais = load(
+    return (
         int(f"{year}{start_month:02}01"),
         int(f"{year}{end_month:02}{30 if end_month in [2,4,6,9,11] else 31}"),
+        f"{year}_{start_month:02}_{end_month:02}",
     )
-    period = f"{year}_{start_month:02}_{end_month:02}"
-    _create_dataset(kaisais, period, only_input)
 
 
 def _create_dataset(start: int, end: int, period: str, only_input: bool):
