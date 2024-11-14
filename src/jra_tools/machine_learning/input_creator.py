@@ -36,11 +36,8 @@ def create_training_dataset(start: int, end: int, only_input: bool = True):
     Raises:
         RuntimeError: データのロードまたは保存中にエラーが発生
     """
-    try:
-        _start, _end, period = _training_period(start, end)
-        _create_dataset(_start, _end, period, only_input)
-    except Exception as e:
-        raise RuntimeError("トレーニングデータの作成中にエラーが発生しました") from e
+    _start, _end, period = _training_period(start, end)
+    _create_dataset(_start, _end, period, only_input)
 
 
 def create_quarter_dataset(year: int, quarter: int, only_input: bool = True) -> None:
@@ -68,8 +65,11 @@ def _quarter_period(year: int, quarter: int):
 def _create_dataset(start: int, end: int, period: str, only_input: bool):
     from jra_tools import load
 
-    kaisais, period = load(start, end)
-    _create_dataset_from(kaisais, period, only_input)
+    try:
+        kaisais, period = load(start, end)
+        _create_dataset_from(kaisais, period, only_input)
+    except Exception as e:
+        raise RuntimeError("データセットの作成中にエラー") from e
 
 
 def _training_period(start, end):
