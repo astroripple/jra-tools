@@ -43,6 +43,26 @@ def create_training_dataset(start: int, end: int, only_input: bool = True):
         raise RuntimeError("トレーニングデータの作成中にエラーが発生しました") from e
 
 
+def create_quarter_dataset(year: int, quarter: int, only_input: bool = True) -> None:
+    """指定した四半期のデータセットをファイルに保存する
+
+    Args:
+        year (int): YYYY
+        quarter (int): 1 - 4
+        only_input (bool, optional): 入力データのみを作成するか. Defaults to True.
+    """
+    start_month = int(12 / 4 * (quarter - 1) + 1)
+    end_month = start_month + 2
+    from jra_tools import load
+
+    kaisais = load(
+        int(f"{year}{start_month:02}01"),
+        int(f"{year}{end_month:02}{30 if end_month in [2,4,6,9,11] else 31}"),
+    )
+    period = f"{year}_{start_month:02}_{end_month:02}"
+    _create_dataset(kaisais, period, only_input)
+
+
 def _load(start, end) -> Tuple[List[KaisaiData], str]:
     from jra_tools import load
 
@@ -63,26 +83,6 @@ def _save_payout(kaisais, period: str):
 
     with open(f"payout_{period}.dump", "wb") as f:
         payout.dump(f)
-
-
-def create_quarter_dataset(year: int, quarter: int, only_input: bool = True) -> None:
-    """指定した四半期のデータセットをファイルに保存する
-
-    Args:
-        year (int): YYYY
-        quarter (int): 1 - 4
-        only_input (bool, optional): 入力データのみを作成するか. Defaults to True.
-    """
-    start_month = int(12 / 4 * (quarter - 1) + 1)
-    end_month = start_month + 2
-    from jra_tools import load
-
-    kaisais = load(
-        int(f"{year}{start_month:02}01"),
-        int(f"{year}{end_month:02}{30 if end_month in [2,4,6,9,11] else 31}"),
-    )
-    period = f"{year}_{start_month:02}_{end_month:02}"
-    _create_dataset(kaisais, period, only_input)
 
 
 def _create_dataset(kaisais, period: str, only_input: bool):
