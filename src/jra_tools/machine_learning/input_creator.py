@@ -37,7 +37,10 @@ def create_training_dataset(start: int, end: int, only_input: bool = True):
         RuntimeError: データのロードまたは保存中にエラーが発生
     """
     try:
-        kaisais, period = _load(start, end)
+        _start, _end, period = _training_period(start, end)
+        from jra_tools import load
+
+        kaisais, period = load(_start, _end)
         _create_dataset(kaisais, period, only_input)
     except Exception as e:
         raise RuntimeError("トレーニングデータの作成中にエラーが発生しました") from e
@@ -63,12 +66,12 @@ def create_quarter_dataset(year: int, quarter: int, only_input: bool = True) -> 
     _create_dataset(kaisais, period, only_input)
 
 
-def _load(start, end) -> Tuple[List[KaisaiData], str]:
-    from jra_tools import load
-
-    kaisais = load(int(f"{start}0101"), int(f"{end}1231"))
-    period = "data" if start == 2012 and end == 2018 else f"{start}_{end}"
-    return kaisais, period
+def _training_period(start, end):
+    return (
+        int(f"{start}0101"),
+        int(f"{end}1231"),
+        "data" if start == 2012 and end == 2018 else f"{start}_{end}",
+    )
 
 
 def _save_x(kaisais, period: str):
