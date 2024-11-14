@@ -1,6 +1,6 @@
 ﻿"""推論に必要なデータセットを作成する"""
 
-from typing import Tuple, List
+from typing import List
 import numpy as np
 from jrdb_model import KaisaiData
 from . import training_tool
