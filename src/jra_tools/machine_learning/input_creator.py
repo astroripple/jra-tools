@@ -38,10 +38,7 @@ def create_training_dataset(start: int, end: int, only_input: bool = True):
     """
     try:
         _start, _end, period = _training_period(start, end)
-        from jra_tools import load
-
-        kaisais, period = load(_start, _end)
-        _create_dataset(kaisais, period, only_input)
+        _create_dataset(_start, _end, period, only_input)
     except Exception as e:
         raise RuntimeError("トレーニングデータの作成中にエラーが発生しました") from e
 
@@ -66,6 +63,13 @@ def create_quarter_dataset(year: int, quarter: int, only_input: bool = True) -> 
     _create_dataset(kaisais, period, only_input)
 
 
+def _create_dataset(start: int, end: int, period: str, only_input: bool):
+    from jra_tools import load
+
+    kaisais, period = load(start, end)
+    _create_dataset_from(kaisais, period, only_input)
+
+
 def _training_period(start, end):
     return (
         int(f"{start}0101"),
@@ -88,7 +92,7 @@ def _save_payout(kaisais, period: str):
         payout.dump(f)
 
 
-def _create_dataset(kaisais, period: str, only_input: bool):
+def _create_dataset_from(kaisais, period: str, only_input: bool):
     _save_x(kaisais, period)
     if not only_input:
         _save_payout(kaisais, period)
