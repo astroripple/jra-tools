@@ -14,12 +14,12 @@
 		"ghcr.io/jsburckhardt/devcontainer-features/uv:1": {}
 	},
 	"mounts": [
-		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Uncomment the next line to run commands after the container is created.
-	// "postCreateCommand": "apt-get install -y git",
+	"postCreateCommand": "./.devcontainer/postCreateCommand.sh",
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
