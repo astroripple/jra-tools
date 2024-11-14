@@ -40,8 +40,8 @@ def create_training_input_data(start: int, end: int):
 
     try:
         kaisais = load(int(f"{start}0101"), int(f"{end}1231"))
-        ic = InputCreator(kaisais)
         period = "data" if start == 2012 and end == 2018 else f"{start}_{end}"
+        ic = InputCreator(kaisais)
         ic.save(f"x_{period}.dump")
     except Exception as e:
         raise RuntimeError(
