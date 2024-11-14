@@ -1,6 +1,6 @@
 ﻿"""推論に必要なデータセットを作成する"""
 
-from typing import List
+from typing import Tuple, List
 import numpy as np
 from jrdb_model import KaisaiData
 from . import training_tool
@@ -36,16 +36,21 @@ def create_training_input_data(start: int, end: int):
     Raises:
         RuntimeError: データのロードまたは保存中にエラーが発生
     """
-    from jra_tools import load
-
     try:
-        kaisais = load(int(f"{start}0101"), int(f"{end}1231"))
-        period = "data" if start == 2012 and end == 2018 else f"{start}_{end}"
+        kaisais, period = _load(start, end)
         _save_x(kaisais, period)
     except Exception as e:
         raise RuntimeError(
             "トレーニングの入力データの作成中にエラーが発生しました"
         ) from e
+
+
+def _load(start, end) -> Tuple[List[KaisaiData], str]:
+    from jra_tools import load
+
+    kaisais = load(int(f"{start}0101"), int(f"{end}1231"))
+    period = "data" if start == 2012 and end == 2018 else f"{start}_{end}"
+    return kaisais, period
 
 
 def _save_x(kaisais, period: str):
