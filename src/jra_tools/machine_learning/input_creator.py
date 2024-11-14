@@ -26,7 +26,7 @@ class InputCreator:
             self.x_data.dump(f)
 
 
-def create_training_input_data(start: int, end: int):
+def create_training_dataset(start: int, end: int, only_input: bool = True):
     """指定した期間のデータセットを作成する
 
     Args:
@@ -39,10 +39,10 @@ def create_training_input_data(start: int, end: int):
     try:
         kaisais, period = _load(start, end)
         _save_x(kaisais, period)
+        if not only_input:
+            _save_payout(kaisais, period)
     except Exception as e:
-        raise RuntimeError(
-            "トレーニングの入力データの作成中にエラーが発生しました"
-        ) from e
+        raise RuntimeError("トレーニングデータの作成中にエラーが発生しました") from e
 
 
 def _load(start, end) -> Tuple[List[KaisaiData], str]:
