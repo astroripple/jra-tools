@@ -38,9 +38,7 @@ def create_training_dataset(start: int, end: int, only_input: bool = True):
     """
     try:
         kaisais, period = _load(start, end)
-        _save_x(kaisais, period)
-        if not only_input:
-            _save_payout(kaisais, period)
+        _create_dataset(kaisais, period, only_input)
     except Exception as e:
         raise RuntimeError("トレーニングデータの作成中にエラーが発生しました") from e
 
@@ -84,7 +82,10 @@ def create_quarter_dataset(year: int, quarter: int, only_input: bool = True) -> 
         int(f"{year}{end_month:02}{30 if end_month in [2,4,6,9,11] else 31}"),
     )
     period = f"{year}_{start_month:02}_{end_month:02}"
+    _create_dataset(kaisais, period, only_input)
 
+
+def _create_dataset(kaisais, period: str, only_input: bool):
     _save_x(kaisais, period)
     if not only_input:
         _save_payout(kaisais, period)
