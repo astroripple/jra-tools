@@ -12,7 +12,9 @@ def test_save(sample_kaisais):
         ic = InputCreator(sample_kaisais)
         ic.save("testfile")
 
-        assert isinstance(ic, ICreator)
+        assert isinstance(
+            ic, ICreator
+        ), "InputCreatorがICreatorのプロトコルに適合しません"
         with open("x_testfile.dump", "rb") as f:
             data = np.load(f, allow_pickle=True)
 
