@@ -11,6 +11,7 @@ class InputCreator:
     """KaisaiDataを元にndarrayを作成する"""
 
     def __init__(self, kaisais: List[KaisaiData]):
+        self.kaisais = kaisais
         score_data = training_tool.create_score_data_matrix(kaisais)
         sds = training_tool.standardize(score_data)
         cd = category_data.get_category_data(kaisais)
@@ -22,7 +23,7 @@ class InputCreator:
         Args:
             name (str): ファイル名。拡張子も含めること。
         """
-        with open(name, mode="wb") as f:
+        with open(f"x_{name}.dump", mode="wb") as f:
             self.x_data.dump(f)
 
 
