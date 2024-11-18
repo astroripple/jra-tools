@@ -1,4 +1,5 @@
 """カテゴリ変数を取得する"""
+
 from typing import List
 import numpy as np
 from jrdb_model import KaisaiData, BangumiData, RacehorseData
@@ -46,7 +47,12 @@ def _get_category(
     kaisai: KaisaiData, race: BangumiData, horse: RacehorseData
 ) -> np.ndarray:
     cg = CategoryGetter()
-    return np.hstack((cg.getWaku(horse.waku),))
+    return np.hstack(
+        (
+            cg.getWaku(horse.waku),
+            cg.getBanushikaicode(_filter_str_to_int(horse.banushikai_code)),
+        )
+    )
 
 
 def _filter_str_to_int(value):

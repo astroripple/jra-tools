@@ -32,11 +32,18 @@
 					"-vv"
 				],
 				"python.testing.pytestEnabled": true,
+				"mypy-type-checker.path": [
+					"${workspaceFolder}/.venv/bin/mypy"
+				],
+				"mypy-type-checker.args": [
+					"--config=${workspaceFolder}/pyproject.toml"
+				],
 			},
 			"extensions": [
 				"ms-python.python",
 				"ms-python.black-formatter",
 				"ms-python.pylint",
+				"ms-python.mypy-type-checker",
 				"njpwerner.autodocstring"
 			]
 		}

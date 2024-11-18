@@ -1,4 +1,5 @@
 """トレーニングに利用する関数"""
+
 from typing import List
 from functools import reduce
 import numpy as np
@@ -96,11 +97,16 @@ def _set_score_data(
 def _kaisai_scores(kaisai: KaisaiData) -> List:
     return [
         kaisai.turf_baba_in,
+        kaisai.turf_baba_center,
+        kaisai.turf_baba_out,
+        kaisai.dart_baba_in,
+        kaisai.dart_baba_out,
+        kaisai.dart_baba_sa,
     ]
 
 
 def _race_scores(race: BangumiData):
-    return []
+    return [race.num_of_all_horse]
 
 
 def _horse_scores(horse: RacehorseData) -> List:
@@ -111,12 +117,38 @@ def _horse_scores(horse: RacehorseData) -> List:
         horse.train_score,
         horse.trainer_score,
         horse.train_code,
+        horse.trainer_hyoka_code,
         horse.jockey_rate_rentai,
+        horse.gekiso_score,
+        horse.kinryo,
         horse.kakutoku_money,
+        horse.pace_score,
+        horse.up_score,
+        horse.position_score,
+        horse.gekiso_order,
         horse.ls_score_order,
+        horse.ten_score_order,
+        horse.pace_score_order,
         horse.up_score_order,
+        horse.position_score_order,
         horse.expect_jokey_win_rate,
         horse.expect_jokey_rentai_rate,
+        horse.siri,
+        horse.harabukuro,
+        horse.head,
+        horse.shoulder,
+        horse.zencho,
+        horse.kocho,
+        horse.ushirohaba,
+        horse.mambaken_score,
+        horse.runtimes_first_train,
+        horse.trainanalysis.oikiri_score,
+        horse.trainanalysis.shiage_score,
+        horse.trainoikiri.train_f,
+        horse.trainoikiri.end_f,
+        horse.trainoikiri.mid_f_score,
+        horse.trainoikiri.end_f_score,
+        horse.trainoikiri.oikiri_score,
         horse.calculated_score.waku_win_rate,
         horse.calculated_score.waku_rentai_rate,
     ]
