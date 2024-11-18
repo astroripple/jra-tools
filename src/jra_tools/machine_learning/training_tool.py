@@ -149,6 +149,8 @@ def _horse_scores(horse: RacehorseData) -> List:
         horse.trainoikiri.mid_f_score,
         horse.trainoikiri.end_f_score,
         horse.trainoikiri.oikiri_score,
+        horse.calculated_score.waku_win_rate,
+        horse.calculated_score.waku_rentai_rate,
     ]
 
 
