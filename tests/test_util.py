@@ -31,9 +31,18 @@ def test_create_training_dataset(mock_create_dataset: MagicMock):
 
 
 def test_create_quarter_dataset(mock_create_dataset: MagicMock):
-    """四半期データセットのユースケース
+    """トレーニングデータセットのユースケース
 
     Args:
         mock_create_dataset (MagicMock): モック済みcreate_dataset_from
     """
-    pass
+    from jra_tools.machine_learning import util
+
+    util.create_training_dataset(2013, 2019)
+
+    mock_create_dataset.assert_called_once_with(
+        20130101,
+        20191231,
+        "2013_2019",
+        True,
+    )
