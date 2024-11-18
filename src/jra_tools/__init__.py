@@ -14,4 +14,4 @@ from .machine_learning.kaisai_loader import *
 from .machine_learning.label_creator import *
 from .machine_learning.labelutil import *
 from .machine_learning.training_tool import *
-from .machine_learning.util import *
+from .machine_learning.payout_creator import *

@@ -4,9 +4,9 @@ from typing import List
 import os
 import pickle
 import pytest
-from jra_tools.machine_learning import util
+from jrdb_model import KaisaiData
 
-KaisaiList = List[util.KaisaiData]
+KaisaiList = List[KaisaiData]
 
 
 @pytest.fixture
