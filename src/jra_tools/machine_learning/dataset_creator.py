@@ -22,7 +22,9 @@ def create_dataset_from(
         payout_factory (Callable[..., ICreator]): 払戻データを作成するクラス
     """
     ic = input_factory(kaisais)
+    assert isinstance(ic, ICreator)
     ic.save(period)
     if not only_input:
         pc = payout_factory(kaisais)
+        assert isinstance(pc, ICreator)
         pc.save(period)
