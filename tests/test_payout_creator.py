@@ -22,7 +22,7 @@ def test_save(sample_kaisais):
         pc = PayoutCreator(sample_kaisais)
         pc.save("testfile")
         with open("payout_testfile.dump", "rb") as f:
-            data = np.load(f)
+            data = np.load(f, allow_pickle=True)
 
         assert isinstance(pc, ICreator)
         assert len(data) == 24
