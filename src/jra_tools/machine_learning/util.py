@@ -15,6 +15,14 @@ def create_training_dataset(start: int, end: int, only_input: bool = True):
     _create_dataset(_start, _end, period, only_input)
 
 
+def _training_period(start, end):
+    return (
+        int(f"{start}0101"),
+        int(f"{end}1231"),
+        "data" if start == 2012 and end == 2018 else f"{start}_{end}",
+    )
+
+
 def create_quarter_dataset(year: int, quarter: int, only_input: bool = True) -> None:
     """指定した四半期のデータセットをファイルに保存する
 
@@ -42,25 +50,13 @@ def _create_dataset(start: int, end: int, period: str, only_input: bool):
     from jra_tools.machine_learning.target_dataset_creator import TargetDatasetCreator
     from jra_tools import KaisaiLoader, InputCreator, PayoutCreator
 
-    try:
-
-        creator = TargetDatasetCreator(
-            start,
-            end,
-            only_input,
-            KaisaiLoader,
-            DatasetCreator,
-            InputCreator,
-            PayoutCreator,
-        )
-        creator.save(period)
-    except Exception as e:
-        raise RuntimeError("データセットの作成中にエラー") from e
-
-
-def _training_period(start, end):
-    return (
-        int(f"{start}0101"),
-        int(f"{end}1231"),
-        "data" if start == 2012 and end == 2018 else f"{start}_{end}",
+    creator = TargetDatasetCreator(
+        start,
+        end,
+        only_input,
+        KaisaiLoader,
+        DatasetCreator,
+        InputCreator,
+        PayoutCreator,
     )
+    creator.save(period)
