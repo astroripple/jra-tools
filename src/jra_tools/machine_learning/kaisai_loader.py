@@ -1,15 +1,18 @@
 """開催一覧を1年分以上ロードする"""
 
-from typing import List, Tuple, Protocol, Callable
+from typing import List, Tuple, Protocol, runtime_checkable
 from dataclasses import dataclass
 import datetime as dt
 from .kaisai_creator import get_kaisais, KaisaiData
 
 
+@runtime_checkable
 class IKaisaiLoader(Protocol):
     start: int
     end: int
-    load: Callable[..., List[KaisaiData]]
+
+    def load(self) -> List[KaisaiData]:
+        """"""
 
 
 @dataclass
@@ -17,7 +20,7 @@ class KaisaiLoader:
     start: int
     end: int
 
-    def load(self):
+    def load(self) -> List[KaisaiData]:
         return load(self.start, self.end)
 
 
