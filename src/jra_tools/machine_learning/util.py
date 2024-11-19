@@ -39,12 +39,20 @@ def _quarter_period(year: int, quarter: int):
 
 def _create_dataset(start: int, end: int, period: str, only_input: bool):
     from jra_tools.machine_learning.dataset_creator import DatasetCreator
+    from jra_tools.machine_learning.target_dataset_creator import TargetDatasetCreator
     from jra_tools import KaisaiLoader, InputCreator, PayoutCreator
 
     try:
 
-        loader = KaisaiLoader(start, end)
-        creator = DatasetCreator(loader.load(), only_input, InputCreator, PayoutCreator)
+        creator = TargetDatasetCreator(
+            start,
+            end,
+            only_input,
+            KaisaiLoader,
+            DatasetCreator,
+            InputCreator,
+            PayoutCreator,
+        )
         creator.save(period)
     except Exception as e:
         raise RuntimeError("データセットの作成中にエラー") from e
