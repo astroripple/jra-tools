@@ -1,8 +1,24 @@
 """開催一覧を1年分以上ロードする"""
 
-from typing import List, Tuple
+from typing import List, Tuple, Protocol, Callable
+from dataclasses import dataclass
 import datetime as dt
 from .kaisai_creator import get_kaisais, KaisaiData
+
+
+class IKaisaiLoader(Protocol):
+    start: int
+    end: int
+    load: Callable[..., List[KaisaiData]]
+
+
+@dataclass
+class KaisaiLoader:
+    start: int
+    end: int
+
+    def load(self):
+        return load(self.start, self.end)
 
 
 def load(start: int, end: int) -> List[KaisaiData]:

@@ -1,8 +1,40 @@
 """トレーニングデータセットをローカルに作成する"""
 
-from typing import Callable, List
+from typing import Callable, List, Protocol
+from dataclasses import dataclass
 from jrdb_model import KaisaiData
 from jra_tools.machine_learning.icreator import ICreator
+
+
+class IDatasetCreator(Protocol):
+    """データセットクリエイターインターフェース
+
+    Args:
+        Protocol (_type_): _description_
+    """
+
+    kaisais: List[KaisaiData]
+    only_input: bool
+    input_factory: Callable[..., ICreator]
+    payout_factory: Callable[..., ICreator]
+    save: Callable[[str], None]
+
+
+@dataclass
+class DatasetCreator:
+    kaisais: List[KaisaiData]
+    only_input: bool
+    input_factory: Callable[..., ICreator]
+    payout_factory: Callable[..., ICreator]
+
+    def save(self, period: str):
+        ic = self.input_factory(self.kaisais)
+        assert isinstance(ic, ICreator)
+        ic.save(period)
+        if not self.only_input:
+            pc = self.payout_factory(self.kaisais)
+            assert isinstance(pc, ICreator)
+            pc.save(period)
 
 
 def create_dataset_from(
