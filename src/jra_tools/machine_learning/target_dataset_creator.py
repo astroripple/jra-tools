@@ -1,9 +1,29 @@
 """DBから指定した期間のデータセットを作成する"""
 
-from typing import Callable
+from typing import Callable, runtime_checkable, Protocol
 from dataclasses import dataclass
 from jra_tools.machine_learning.icreator import ICreator
 from jra_tools import IDatasetCreator, IKaisaiLoader
+
+
+@runtime_checkable
+class ITargetDatasetCreator(Protocol):
+    """指定した日付のデータセットを作成する
+
+    Raises:
+        RuntimeError: 作成中に発生したエラー
+    """
+
+    start: int
+    end: int
+    only_input: bool
+    loader_factory: Callable[..., IKaisaiLoader]
+    dataset_creator_factory: Callable[..., IDatasetCreator]
+    input_factory: Callable[..., ICreator]
+    payout_factory: Callable[..., ICreator]
+
+    def save(self, period: str):
+        """指定したperiodの名前でファイルを保存する"""
 
 
 @dataclass
