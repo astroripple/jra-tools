@@ -1,34 +1,27 @@
 """トレーニングデータセットをローカルに作成する"""
 
 from typing import Callable, List, Protocol, runtime_checkable
+from dataclasses import dataclass
 from jrdb_model import KaisaiData
 from jra_tools.machine_learning.icreator import ICreator
+from jra_tools import save_input_data_from, save_payout_from
 
 
 @runtime_checkable
 class IDatasetCreator(Protocol):
-    kaisais: List[KaisaiData]
     only_input: bool
-    input_factory: Callable[..., ICreator]
-    payout_factory: Callable[..., ICreator]
+    input_creator: ICreator
+    payout_creator: ICreator
 
     def save(self, period: str) -> None:
         """指定したperiodでファイルを保存する"""
 
 
+@dataclass
 class DatasetCreator:
-
-    def __init__(
-        self,
-        kaisais: List[KaisaiData],
-        only_input: bool,
-        input_factory: Callable[..., ICreator],
-        payout_factory: Callable[..., ICreator],
-    ):
-        self.kaisais = kaisais
-        self.only_input = only_input
-        self.input_factory = input_factory
-        self.payout_factory = payout_factory
+    only_input: bool
+    input_creator: ICreator
+    payout_creator: ICreator
 
     def save(self, period: str) -> None:
         """ローカルにファイルを保存する
@@ -36,10 +29,21 @@ class DatasetCreator:
         Args:
             period (str): 指定する期間
         """
-        ic = self.input_factory(self.kaisais)
-        assert isinstance(ic, ICreator)
-        ic.save(period)
+        self.input_creator.save(period)
         if not self.only_input:
-            pc = self.payout_factory(self.kaisais)
-            assert isinstance(pc, ICreator)
-            pc.save(period)
+            self.payout_creator.save(period)
+
+
+SaveDataFn = Callable[[List[KaisaiData], str], None]
+
+
+def save_dataset_from(
+    kaisais: List[KaisaiData],
+    name: str,
+    only_input: bool,
+    save_input_fn: SaveDataFn,
+    save_payout_fn: SaveDataFn,
+):
+    save_input_fn(kaisais, name)
+    if not only_input:
+        save_payout_fn(kaisais, name)
