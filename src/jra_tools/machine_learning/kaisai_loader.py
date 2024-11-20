@@ -7,9 +7,7 @@ from .kaisai_creator import get_kaisais, KaisaiData
 
 
 @runtime_checkable
-class IKaisaiLoader(Protocol):
-    start: int
-    end: int
+class IQuery(Protocol):
 
     def load(self) -> List[KaisaiData]:
         """"""
