@@ -38,3 +38,13 @@ def create_input_data(kaisais: List[KaisaiData]) -> np.ndarray:
     score_data = standardize(create_score_data_matrix(kaisais))
     cd = get_category_data(kaisais)
     return np.concatenate((score_data, cd), axis=2)
+
+
+def save_input_data_from(kaisais: List[KaisaiData], name: str):
+    """開催一覧から入力データのndarrayをローカルに保存する
+
+    Args:
+        kaisais (List[KaisaiData]): 開催一覧
+        name (str): ファイル名
+    """
+    save_input_data(create_input_data(kaisais), name)
