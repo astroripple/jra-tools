@@ -4,7 +4,6 @@ from typing import Callable, List, Protocol, runtime_checkable
 from dataclasses import dataclass
 from jrdb_model import KaisaiData
 from jra_tools.machine_learning.icreator import ICreator
-from jra_tools import save_input_data_from, save_payout_from
 
 
 CreatorFactory = Callable[[List[KaisaiData]], ICreator]
@@ -12,7 +11,8 @@ CreatorFactory = Callable[[List[KaisaiData]], ICreator]
 
 @runtime_checkable
 class IDatasetCreator(Protocol):
-    only_input: bool
+
+    kaisais: List[KaisaiData]
     factories: List[CreatorFactory]
 
     def save(self, period: str) -> None:
@@ -41,10 +41,8 @@ SaveDataFn = Callable[[List[KaisaiData], str], None]
 def save_dataset_from(
     kaisais: List[KaisaiData],
     name: str,
-    only_input: bool,
     save_input_fn: SaveDataFn,
     save_payout_fn: SaveDataFn,
 ):
     save_input_fn(kaisais, name)
-    if not only_input:
-        save_payout_fn(kaisais, name)
+    save_payout_fn(kaisais, name)
