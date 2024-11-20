@@ -19,8 +19,13 @@ class InputCreator:
         Args:
             name (str): ファイル名。拡張子も含めること。
         """
-        with open(f"x_{name}.dump", mode="wb") as f:
-            self.x_data.dump(f)
+        save_input_data(self.kaisais, name)
+
+
+def save_input_data(kaisais: List[KaisaiData], name: str) -> None:
+    x_data = create_input_data(kaisais)
+    with open(f"x_{name}.dump", mode="wb") as f:
+        x_data.dump(f)
 
 
 def create_input_data(kaisais: List[KaisaiData]) -> np.ndarray:
