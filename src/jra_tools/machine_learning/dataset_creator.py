@@ -7,11 +7,13 @@ from jra_tools.machine_learning.icreator import ICreator
 from jra_tools import save_input_data_from, save_payout_from
 
 
+CreatorFactory = Callable[[List[KaisaiData]], ICreator]
+
+
 @runtime_checkable
 class IDatasetCreator(Protocol):
     only_input: bool
-    input_creator: ICreator
-    payout_creator: ICreator
+    factories: List[CreatorFactory]
 
     def save(self, period: str) -> None:
         """指定したperiodでファイルを保存する"""
@@ -19,19 +21,18 @@ class IDatasetCreator(Protocol):
 
 @dataclass
 class DatasetCreator:
-    only_input: bool
-    input_creator: ICreator
-    payout_creator: ICreator
+    kaisais: List[KaisaiData]
+    factories: List[CreatorFactory]
 
     def save(self, period: str) -> None:
-        """ローカルにファイルを保存する
+        """ローカルにndarrayファイルを保存する
 
         Args:
             period (str): 指定する期間
         """
-        self.input_creator.save(period)
-        if not self.only_input:
-            self.payout_creator.save(period)
+        for factory in self.factories:
+            creator = factory(self.kaisais)
+            creator.save(period)
 
 
 SaveDataFn = Callable[[List[KaisaiData], str], None]
