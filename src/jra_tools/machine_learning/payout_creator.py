@@ -27,6 +27,21 @@ def create_payout(kaisais: List[KaisaiData]) -> np.ndarray:
     return payout_data
 
 
+def save_payout(payout: np.ndarray, period: str):
+    with open(f"payout_{period}.dump", "wb") as f:
+        payout.dump(f)
+
+
+def save_payout_from(kaisais: List[KaisaiData], period: str):
+    """開催一覧から払戻金データをローカルに保存する
+
+    Args:
+        kaisais (List[KaisaiData]): 開催一覧
+        period (str): ファイル名
+    """
+    save_payout(create_payout(kaisais), period)
+
+
 class PayoutCreator:
     """kaisaisから払戻金を作るクラス"""
 
@@ -40,5 +55,4 @@ class PayoutCreator:
         Args:
             period (str): 拡張子を除いたファイル名
         """
-        with open(f"payout_{period}.dump", "wb") as f:
-            self.payout.dump(f)
+        save_payout(self.payout, period)
