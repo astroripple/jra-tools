@@ -10,7 +10,11 @@ from .kaisai_creator import get_kaisais, KaisaiData
 class IQuery(Protocol):
 
     def load(self) -> List[KaisaiData]:
-        """"""
+        """開催データ一覧を取得する
+
+        Returns:
+            List[KaisaiData]: 開催データ一覧
+        """
 
 
 @dataclass
