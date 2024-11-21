@@ -29,5 +29,5 @@ def test_converter(sample_kaisais):
     converter = Converter(mock_query, [MockFactory])
     converter.save("test_file")
 
-    mock_query.load.assert_called_once_with()
+    mock_load.assert_called_once_with()
     mock_save.assert_called_once_with("test_file")
