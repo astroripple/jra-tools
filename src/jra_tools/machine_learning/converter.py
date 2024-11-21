@@ -15,7 +15,7 @@ class Converter:
         self.query = query
         self.factories = factories
 
-    def save(self, name: Optional[str]):
+    def save(self, name: Optional[str] = None):
         """指定したファイル名でndarrayを保存する
 
         Args:
