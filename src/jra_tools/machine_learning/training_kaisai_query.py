@@ -1,15 +1,22 @@
 from typing import List
-from dataclasses import dataclass
 from jrdb_model import KaisaiData
 from jra_tools.machine_learning.kaisai_loader import load
 
 
-@dataclass
+def _validate_year(year: int):
+    assert 2000 <= year <= 2100, "2000年以降を指定してください"
+    assert isinstance(year, int)
+
+
 class TrainingKaisaiQuery:
     """トレーニングデータ用クエリ"""
 
-    start: int
-    end: int
+    def __init__(self, start: int, end: int):
+        _validate_year(start)
+        _validate_year(end)
+        assert start <= end, "終了年は開始年以降にしてください"
+        self.start = start
+        self.end = end
 
     def load(self) -> List[KaisaiData]:
         return load(self._start, self._end)
