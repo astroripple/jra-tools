@@ -8,6 +8,7 @@ from .kaisai_creator import get_kaisais, KaisaiData
 
 @runtime_checkable
 class IQuery(Protocol):
+    period: str
 
     def load(self) -> List[KaisaiData]:
         """開催データ一覧を取得する
@@ -24,6 +25,10 @@ class KaisaiLoader:
 
     def load(self) -> List[KaisaiData]:
         return load(self.start, self.end)
+
+    @property
+    def period(self) -> str:
+        return f"{self.start}_{self.end}"
 
 
 def load(start: int, end: int) -> List[KaisaiData]:
