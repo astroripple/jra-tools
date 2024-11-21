@@ -3,7 +3,11 @@
 from typing import List
 import numpy as np
 from jrdb_model import KaisaiData
-from jra_tools import create_score_data_matrix, standardize, get_category_data
+from jra_tools.machine_learning.training_tool import (
+    create_score_data_matrix,
+    standardize,
+)
+from jra_tools.machine_learning.category_data import get_category_data
 
 
 class InputCreator:
