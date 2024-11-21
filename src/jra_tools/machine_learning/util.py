@@ -1,5 +1,7 @@
 """ツールのユースケース"""
 
+from jra_tools import InputCreator, PayoutCreator
+from jra_tools.machine_learning.training_kaisai_query import TrainingKaisaiQuery
 from jra_tools.machine_learning.converter import Converter
 
 
@@ -13,16 +15,11 @@ def create_training_dataset(start: int, end: int):
     Raises:
         RuntimeError: データのロードまたは保存中にエラーが発生
     """
-    _start, _end, period = _training_period(start, end)
-    _create_dataset(_start, _end, period)
 
-
-def _training_period(start, end):
-    return (
-        int(f"{start}0101"),
-        int(f"{end}1231"),
-        "data" if start == 2012 and end == 2018 else f"{start}_{end}",
+    converter = Converter(
+        TrainingKaisaiQuery(start, end), [InputCreator, PayoutCreator]
     )
+    converter.save()
 
 
 def create_quarter_dataset(year: int, quarter: int) -> None:
@@ -47,8 +44,8 @@ def _quarter_period(year: int, quarter: int):
     )
 
 
-def _create_dataset(start: int, end: int, period: str):
-    from jra_tools import KaisaiLoader, InputCreator, PayoutCreator
+def _create_dataset(query: IQuery, period: str):
+    from jra_tools import InputCreator, PayoutCreator
 
-    converter = Converter(KaisaiLoader(start, end), [InputCreator, PayoutCreator])
+    converter = Converter(query, [InputCreator, PayoutCreator])
     converter.save(period)
