@@ -3,8 +3,11 @@
 from typing import List
 import numpy as np
 from jrdb_model import KaisaiData
-from . import training_tool
-from . import category_data
+from jra_tools.machine_learning.training_tool import (
+    create_score_data_matrix,
+    standardize,
+)
+from jra_tools.machine_learning.category_data import get_category_data
 
 
 class InputCreator:
@@ -12,10 +15,7 @@ class InputCreator:
 
     def __init__(self, kaisais: List[KaisaiData]):
         self.kaisais = kaisais
-        score_data = training_tool.create_score_data_matrix(kaisais)
-        sds = training_tool.standardize(score_data)
-        cd = category_data.get_category_data(kaisais)
-        self.x_data = np.concatenate((sds, cd), axis=2)
+        self.x_data = create_input_data(kaisais)
 
     def save(self, name: str) -> None:
         """入力データを永続化する
@@ -23,5 +23,32 @@ class InputCreator:
         Args:
             name (str): ファイル名。拡張子も含めること。
         """
-        with open(f"x_{name}.dump", mode="wb") as f:
-            self.x_data.dump(f)
+        save_input_data(self.x_data, name)
+
+
+def save_input_data(x_data: np.ndarray, name: str) -> None:
+    with open(f"x_{name}.dump", mode="wb") as f:
+        x_data.dump(f)
+
+
+def create_input_data(kaisais: List[KaisaiData]) -> np.ndarray:
+    """開催一覧から推論モデル用入力データを作成する
+    Args:
+        kaisais (List[KaisaiData]): 開催一覧
+
+    Returns:
+        np.ndarray: 推論モデルの入力データ
+    """
+    score_data = standardize(create_score_data_matrix(kaisais))
+    cd = get_category_data(kaisais)
+    return np.concatenate((score_data, cd), axis=2)
+
+
+def save_input_data_from(kaisais: List[KaisaiData], name: str):
+    """開催一覧から入力データのndarrayをローカルに保存する
+
+    Args:
+        kaisais (List[KaisaiData]): 開催一覧
+        name (str): ファイル名
+    """
+    save_input_data(create_input_data(kaisais), name)

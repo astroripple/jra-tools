@@ -1,8 +1,14 @@
 """ツールのユースケース"""
 
+from functools import partial
+from jra_tools import InputCreator, PayoutCreator
+from jra_tools.machine_learning.training_kaisai_query import TrainingKaisaiQuery
+from jra_tools.machine_learning.quarter_kaisai_query import QuarterKaisaiQuery
+from jra_tools.machine_learning.converter import Converter
 
-def create_training_dataset(start: int, end: int, only_input: bool = True):
-    """指定した期間のデータセットを作成する
+
+def _create_training(start: int, end: int, only_input: bool):
+    """指定した期間のトレーニングデータを作成する
 
     Args:
         start (int): YYYY
@@ -11,11 +17,19 @@ def create_training_dataset(start: int, end: int, only_input: bool = True):
     Raises:
         RuntimeError: データのロードまたは保存中にエラーが発生
     """
-    _start, _end, period = _training_period(start, end)
-    _create_dataset(_start, _end, period, only_input)
+
+    converter = Converter(
+        TrainingKaisaiQuery(start, end),
+        [InputCreator] if only_input else [InputCreator, PayoutCreator],
+    )
+    converter.save()
 
 
-def create_quarter_dataset(year: int, quarter: int, only_input: bool = True) -> None:
+create_training_dataset = partial(_create_training, only_input=False)
+create_training_input = partial(_create_training, only_input=True)
+
+
+def _create_quarter(year: int, quarter: int, only_input: bool) -> None:
     """指定した四半期のデータセットをファイルに保存する
 
     Args:
@@ -23,34 +37,12 @@ def create_quarter_dataset(year: int, quarter: int, only_input: bool = True) -> 
         quarter (int): 1 - 4
         only_input (bool, optional): 入力データのみを作成するか. Defaults to True.
     """
-    _start, _end, period = _quarter_period(year, quarter)
-    _create_dataset(_start, _end, period, only_input)
-
-
-def _quarter_period(year: int, quarter: int):
-    start_month = int(12 / 4 * (quarter - 1) + 1)
-    end_month = start_month + 2
-    return (
-        int(f"{year}{start_month:02}01"),
-        int(f"{year}{end_month:02}{30 if end_month in [2,4,6,9,11] else 31}"),
-        f"{year}_{start_month:02}_{end_month:02}",
+    converter = Converter(
+        QuarterKaisaiQuery(year, quarter),
+        [InputCreator] if only_input else [InputCreator, PayoutCreator],
     )
+    converter.save()
 
 
-def _create_dataset(start: int, end: int, period: str, only_input: bool):
-    from jra_tools.machine_learning.dataset_creator import create_dataset_from
-    from jra_tools import load, InputCreator, PayoutCreator
-
-    try:
-        kaisais, period = load(start, end)
-        create_dataset_from(kaisais, period, only_input, InputCreator, PayoutCreator)
-    except Exception as e:
-        raise RuntimeError("データセットの作成中にエラー") from e
-
-
-def _training_period(start, end):
-    return (
-        int(f"{start}0101"),
-        int(f"{end}1231"),
-        "data" if start == 2012 and end == 2018 else f"{start}_{end}",
-    )
+create_quarter_dataset = partial(_create_quarter, only_input=False)
+create_quarter_input = partial(_create_quarter, only_input=True)
