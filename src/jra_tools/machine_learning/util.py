@@ -1,13 +1,14 @@
 """ツールのユースケース"""
 
+from functools import partial
 from jra_tools import InputCreator, PayoutCreator
 from jra_tools.machine_learning.training_kaisai_query import TrainingKaisaiQuery
 from jra_tools.machine_learning.quarter_kaisai_query import QuarterKaisaiQuery
 from jra_tools.machine_learning.converter import Converter
 
 
-def create_training_dataset(start: int, end: int):
-    """指定した期間のデータセットを作成する
+def _create_training(start: int, end: int, only_input: bool):
+    """指定した期間のトレーニングデータを作成する
 
     Args:
         start (int): YYYY
@@ -18,9 +19,14 @@ def create_training_dataset(start: int, end: int):
     """
 
     converter = Converter(
-        TrainingKaisaiQuery(start, end), [InputCreator, PayoutCreator]
+        TrainingKaisaiQuery(start, end),
+        [InputCreator] if only_input else [InputCreator, PayoutCreator],
     )
     converter.save()
+
+
+create_training_dataset = partial(_create_training, only_input=False)
+create_training_input = partial(_create_training, only_input=True)
 
 
 def create_quarter_dataset(year: int, quarter: int) -> None:
