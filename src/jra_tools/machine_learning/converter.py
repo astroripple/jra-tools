@@ -12,6 +12,7 @@ class Converter:
     """KaisaiDataをndarrayに変換するクラス"""
 
     def __init__(self, query: IQuery, factories: List[CreatorFactory]):
+        assert isinstance(query, IQuery)
         self.query = query
         self.factories = factories
 
@@ -24,4 +25,5 @@ class Converter:
         kaisais = self.query.load()
         for factory in self.factories:
             creator = factory(kaisais)
+            assert isinstance(creator, ICreator)
             creator.save(name if name is not None else self.query.period)
