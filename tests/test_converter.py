@@ -5,11 +5,12 @@ from jra_tools.machine_learning.converter import Converter
 
 
 mock_load = MagicMock()
+mock_period = MagicMock()
 
 
 class MockQuery:
     load = mock_load
-    period = MagicMock()
+    period = mock_period
 
 
 mock_save = MagicMock()
