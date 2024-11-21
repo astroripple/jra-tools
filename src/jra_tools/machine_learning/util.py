@@ -1,7 +1,9 @@
 """ツールのユースケース"""
 
+from jra_tools.machine_learning.converter import Converter
 
-def create_training_dataset(start: int, end: int, only_input: bool = True):
+
+def create_training_dataset(start: int, end: int):
     """指定した期間のデータセットを作成する
 
     Args:
@@ -12,7 +14,7 @@ def create_training_dataset(start: int, end: int, only_input: bool = True):
         RuntimeError: データのロードまたは保存中にエラーが発生
     """
     _start, _end, period = _training_period(start, end)
-    _create_dataset(_start, _end, period, only_input)
+    _create_dataset(_start, _end, period)
 
 
 def _training_period(start, end):
@@ -23,7 +25,7 @@ def _training_period(start, end):
     )
 
 
-def create_quarter_dataset(year: int, quarter: int, only_input: bool = True) -> None:
+def create_quarter_dataset(year: int, quarter: int) -> None:
     """指定した四半期のデータセットをファイルに保存する
 
     Args:
@@ -32,7 +34,7 @@ def create_quarter_dataset(year: int, quarter: int, only_input: bool = True) -> 
         only_input (bool, optional): 入力データのみを作成するか. Defaults to True.
     """
     _start, _end, period = _quarter_period(year, quarter)
-    _create_dataset(_start, _end, period, only_input)
+    _create_dataset(_start, _end, period)
 
 
 def _quarter_period(year: int, quarter: int):
@@ -45,18 +47,8 @@ def _quarter_period(year: int, quarter: int):
     )
 
 
-def _create_dataset(start: int, end: int, period: str, only_input: bool):
-    from jra_tools.machine_learning.dataset_creator import DatasetCreator
-    from jra_tools.machine_learning.target_dataset_creator import TargetDatasetCreator
+def _create_dataset(start: int, end: int, period: str):
     from jra_tools import KaisaiLoader, InputCreator, PayoutCreator
 
-    creator = TargetDatasetCreator(
-        start,
-        end,
-        only_input,
-        KaisaiLoader,
-        DatasetCreator,
-        InputCreator,
-        PayoutCreator,
-    )
-    creator.save(period)
+    converter = Converter(KaisaiLoader(start, end), [InputCreator, PayoutCreator])
+    converter.save(period)
