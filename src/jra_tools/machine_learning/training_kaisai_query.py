@@ -1,3 +1,5 @@
+"""トレーニングデータ取得用クエリ"""
+
 from typing import List
 from jrdb_model import KaisaiData
 from jra_tools.machine_learning.kaisai_loader import load
