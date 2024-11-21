@@ -8,7 +8,9 @@ from .kaisai_creator import get_kaisais, KaisaiData
 
 @runtime_checkable
 class IQuery(Protocol):
-    period: str
+    @property
+    def period(self) -> str:
+        """期間を示すプロパティ"""
 
     def load(self) -> List[KaisaiData]:
         """開催データ一覧を取得する
