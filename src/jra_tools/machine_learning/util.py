@@ -29,7 +29,7 @@ create_training_dataset = partial(_create_training, only_input=False)
 create_training_input = partial(_create_training, only_input=True)
 
 
-def create_quarter_dataset(year: int, quarter: int) -> None:
+def _create_quarter(year: int, quarter: int, only_input: bool) -> None:
     """指定した四半期のデータセットをファイルに保存する
 
     Args:
@@ -38,6 +38,11 @@ def create_quarter_dataset(year: int, quarter: int) -> None:
         only_input (bool, optional): 入力データのみを作成するか. Defaults to True.
     """
     converter = Converter(
-        QuarterKaisaiQuery(year, quarter), [InputCreator, PayoutCreator]
+        QuarterKaisaiQuery(year, quarter),
+        [InputCreator] if only_input else [InputCreator, PayoutCreator],
     )
     converter.save()
+
+
+create_quarter_dataset = partial(_create_quarter, only_input=False)
+create_quarter_input = partial(_create_quarter, only_input=True)
