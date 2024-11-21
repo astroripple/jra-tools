@@ -23,7 +23,7 @@ class MockFactory:
     save = mock_save
 
 
-def test_converter(sample_kaisais):
+def test_save_with_name(sample_kaisais):
     mock_query = MockQuery()
     mock_load.return_value = sample_kaisais
 
@@ -32,3 +32,14 @@ def test_converter(sample_kaisais):
 
     mock_load.assert_called_once_with()
     mock_save.assert_called_once_with("test_file")
+
+
+def test_save_without_name(sample_kaisais):
+    mock_query = MockQuery()
+    mock_load.return_value = sample_kaisais
+
+    converter = Converter(mock_query, [MockFactory])
+    converter.save()
+
+    mock_load.assert_called_once_with()
+    mock_save.assert_called_once_with(mock_period)
