@@ -2,7 +2,8 @@
 
 from typing import List, Protocol, runtime_checkable
 from dataclasses import dataclass
-from jra_tools.machine_learning.infrastructure.kaisai_creator import KaisaiData, load
+from jrdb_model import KaisaiData
+from jra_tools.machine_learning.interface_adapter.iioloader import IOLoader
 
 
 @runtime_checkable
@@ -21,12 +22,7 @@ class IQuery(Protocol):
 
 @dataclass
 class KaisaiLoader:
-    start: int
-    end: int
+    loader: IOLoader
 
     def load(self) -> List[KaisaiData]:
-        return load(self.start, self.end)
-
-    @property
-    def period(self) -> str:
-        return f"{self.start}_{self.end}"
+        return self.loader.load()
