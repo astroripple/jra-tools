@@ -1,10 +1,15 @@
 """ツールのユースケース"""
 
 from functools import partial
-from jra_tools import InputCreator, PayoutCreator
-from jra_tools.machine_learning.training_kaisai_query import TrainingKaisaiQuery
-from jra_tools.machine_learning.quarter_kaisai_query import QuarterKaisaiQuery
-from jra_tools.machine_learning.converter import Converter
+from jra_tools.machine_learning.interface_adapter.input_creator import InputCreator
+from jra_tools.machine_learning.interface_adapter.payout_creator import PayoutCreator
+from jra_tools.machine_learning.interface_adapter.training_kaisai_query import (
+    TrainingKaisaiQuery,
+)
+from jra_tools.machine_learning.interface_adapter.quarter_kaisai_query import (
+    QuarterKaisaiQuery,
+)
+from jra_tools.machine_learning.usecase.converter import Converter
 
 
 def _create_training(start: int, end: int, only_input: bool):
