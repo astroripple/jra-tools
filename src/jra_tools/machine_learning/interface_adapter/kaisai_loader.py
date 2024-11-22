@@ -1,12 +1,8 @@
 """開催一覧を1年分以上ロードする"""
 
-from typing import List, Tuple, Protocol, runtime_checkable
+from typing import List, Protocol, runtime_checkable
 from dataclasses import dataclass
-import datetime as dt
-from jra_tools.machine_learning.infrastructure.kaisai_creator import (
-    get_kaisais,
-    KaisaiData,
-)
+from jra_tools.machine_learning.infrastructure.kaisai_creator import KaisaiData, load
 
 
 @runtime_checkable
