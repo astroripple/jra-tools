@@ -3,7 +3,7 @@
 from typing import List
 import numpy as np
 from jrdb_model import KaisaiData, BangumiData, RacehorseData
-from .jrdbdummies import CategoryGetter
+from jra_tools.machine_learning.entity.jrdbdummies import CategoryGetter
 
 
 def get_category_data(kaisais: List[KaisaiData]) -> np.ndarray:
