@@ -1,7 +1,7 @@
 """converterのユニットテスト"""
 
 from unittest.mock import MagicMock
-from jra_tools.machine_learning.converter import Converter
+from jra_tools.machine_learning.usecase.converter import Converter
 
 
 mock_load = MagicMock()
