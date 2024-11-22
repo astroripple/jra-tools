@@ -1,6 +1,7 @@
 """開催データに紐づくデータを結合した状態でロードする"""
 
 from typing import List, Tuple
+from dataclasses import dataclass
 import datetime as dt
 from jrdb_model import KaisaiData, app
 from sqlalchemy.orm import joinedload
@@ -22,6 +23,21 @@ def get_kaisais(start: int, end: int) -> List[KaisaiData]:
             .options(joinedload("*"))
             .all()
         )
+
+
+@dataclass
+class MysqlLoader:
+    """ "MySQLからエンティティを取得する"""
+
+    start: int
+    end: int
+
+    def load(self) -> List[KaisaiData]:
+        return load(self.start, self.end)
+
+    @property
+    def period(self) -> str:
+        return f"{self.start}_{self.end}"
 
 
 def load(start: int, end: int) -> List[KaisaiData]:
