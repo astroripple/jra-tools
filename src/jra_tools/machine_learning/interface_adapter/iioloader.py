@@ -8,9 +8,6 @@ from jrdb_model import KaisaiData
 class IOLoader(Protocol):
     """IOロードのインターフェース"""
 
-    start: int
-    end: int
-
     def load(self) -> List[KaisaiData]:
         """開催データ一覧を取得する
 
