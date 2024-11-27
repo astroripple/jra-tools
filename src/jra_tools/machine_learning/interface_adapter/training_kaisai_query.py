@@ -29,7 +29,7 @@ class TrainingKaisaiQuery:
         self.loader = loader_factory(self._start, self._end)
 
     def load(self) -> List[KaisaiData]:
-        return self.load()
+        return self.loader.load()
 
     @property
     def _start(self):
