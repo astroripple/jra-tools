@@ -1,6 +1,12 @@
 """四半期用クエリのテスト"""
 
 from pytest_mock import MockerFixture
+from jra_tools.machine_learning.usecase.iquery import (
+    IQuery,
+)
+from jra_tools.machine_learning.interface_adapter.quarter_kaisai_query import (
+    QuarterKaisaiQuery,
+)
 
 
 def test_quarter_kaisai_query(mocker: MockerFixture):
@@ -9,13 +15,6 @@ def test_quarter_kaisai_query(mocker: MockerFixture):
     Args:
         mocker (MockerFixture): _description_
     """
-    from jra_tools.machine_learning.usecase.iquery import (
-        IQuery,
-    )
-    from jra_tools.machine_learning.interface_adapter.quarter_kaisai_query import (
-        QuarterKaisaiQuery,
-    )
-
     mock_loader_factory = mocker.patch("mock_specified_loader.MockSpecifiedLoader")
     mock_loader = mock_loader_factory.return_value
     mock_loader.load.assert_not_called()
