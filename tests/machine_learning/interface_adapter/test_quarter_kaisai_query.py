@@ -1,19 +1,6 @@
 """四半期用クエリのテスト"""
 
-from typing import Callable
-from dataclasses import dataclass
 from pytest_mock import MockerFixture
-
-
-@dataclass
-class MockSpecifiedLoader:
-    start: int
-    end: int
-    load: Callable
-
-    @property
-    def period(self) -> str:
-        return "sample_period"
 
 
 def test_quarter_kaisai_query(mocker: MockerFixture):
@@ -29,9 +16,10 @@ def test_quarter_kaisai_query(mocker: MockerFixture):
         QuarterKaisaiQuery,
     )
 
-    mock_loader_factory = mocker.patch("test_quarter_kaisai_query.MockSpecifiedLoader")
+    mock_loader_factory = mocker.patch("mock_specified_loader.MockSpecifiedLoader")
     mock_loader = mock_loader_factory.return_value
     mock_loader.load.assert_not_called()
+    from mock_specified_loader import MockSpecifiedLoader
 
     query = QuarterKaisaiQuery(2000, 2, MockSpecifiedLoader)
     query.load()
