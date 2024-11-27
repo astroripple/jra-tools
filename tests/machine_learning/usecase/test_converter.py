@@ -1,6 +1,7 @@
 """converterのユニットテスト"""
 
 from unittest.mock import MagicMock
+import pytest
 from jra_tools.machine_learning.usecase.converter import Converter
 
 
@@ -13,6 +14,14 @@ class MockQuery:
     period = mock_period
 
 
+@pytest.fixture
+def mock_query(sample_kaisais):
+    mock_query = MockQuery()
+    mock_load.return_value = sample_kaisais
+    yield mock_query
+    mock_load.reset_mock()
+
+
 mock_save = MagicMock()
 
 
@@ -23,22 +32,22 @@ class MockFactory:
     save = mock_save
 
 
-def test_save_with_name(sample_kaisais):
-    mock_query = MockQuery()
-    mock_load.return_value = sample_kaisais
+@pytest.fixture
+def mock_creator_factory():
+    yield MockFactory
+    mock_save.reset_mock()
 
-    converter = Converter(mock_query, [MockFactory])
+
+def test_save_with_name(mock_query, mock_creator_factory):
+    converter = Converter(mock_query, [mock_creator_factory])
     converter.save("test_file")
 
     mock_load.assert_called_once_with()
     mock_save.assert_called_once_with("test_file")
 
 
-def test_save_without_name(sample_kaisais):
-    mock_query = MockQuery()
-    mock_load.return_value = sample_kaisais
-
-    converter = Converter(mock_query, [MockFactory])
+def test_save_without_name(mock_query, mock_creator_factory):
+    converter = Converter(mock_query, [mock_creator_factory])
     converter.save()
 
     mock_load.assert_called_once_with()
