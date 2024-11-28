@@ -2,8 +2,11 @@
 
 import os
 import numpy as np
-from jra_tools import PayoutCreator, create_payout
-from jra_tools.machine_learning.icreator import ICreator
+from jra_tools.machine_learning.usecase.icreator import ICreator
+from jra_tools.machine_learning.interface_adapter.payout_creator import (
+    PayoutCreator,
+    create_payout,
+)
 
 
 def test_create_payout(sample_kaisais):

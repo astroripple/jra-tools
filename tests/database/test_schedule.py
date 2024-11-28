@@ -1,5 +1,6 @@
 """Yahoo競馬のクローラーテスト"""
 
+import os
 import pickle
 from typing import Generator
 import pytest
@@ -15,8 +16,9 @@ def server() -> Generator[aioresponses, None, None]:
     Yields:
         Generator[aioresponses, None, None]: _description_
     """
+    file_path = os.path.join(os.path.dirname(__file__), "yahoo_keiba.pkl")
     with aioresponses() as m:
-        with open("tests/yahoo_keiba.pkl", mode="rb") as f:
+        with open(file_path, mode="rb") as f:
             m.get(
                 "https://sports.yahoo.co.jp/keiba/schedule/monthly?month=12&year=2018",
                 status=200,

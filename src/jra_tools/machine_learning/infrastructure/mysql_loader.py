@@ -1,27 +1,34 @@
-"""開催一覧を1年分以上ロードする"""
+"""開催データに紐づくデータを結合した状態でロードする"""
 
-from typing import List, Tuple, Protocol, runtime_checkable
+from typing import List, Tuple
 from dataclasses import dataclass
 import datetime as dt
-from .kaisai_creator import get_kaisais, KaisaiData
+from jrdb_model import KaisaiData, app
+from sqlalchemy.orm import joinedload
 
 
-@runtime_checkable
-class IQuery(Protocol):
-    @property
-    def period(self) -> str:
-        """期間を示すプロパティ"""
+def get_kaisais(start: int, end: int) -> List[KaisaiData]:
+    """指定した期間の開催データを取得する
 
-    def load(self) -> List[KaisaiData]:
-        """開催データ一覧を取得する
+    Args:
+        start (int): YYYYMMDD
+        end (int): YYYYMMDD
 
-        Returns:
-            List[KaisaiData]: 開催データ一覧
-        """
+    Returns:
+        list[KaisaiData]: 開催データ一覧
+    """
+    with app.app_context():
+        return (
+            KaisaiData.query.filter(KaisaiData.ymd >= start, KaisaiData.ymd <= end)
+            .options(joinedload("*"))
+            .all()
+        )
 
 
 @dataclass
-class KaisaiLoader:
+class MysqlLoader:
+    """ "MySQLからエンティティを取得する"""
+
     start: int
     end: int
 

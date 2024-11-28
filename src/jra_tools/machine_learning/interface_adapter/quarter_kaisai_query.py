@@ -1,21 +1,30 @@
-from typing import List
-from dataclasses import dataclass
+"""四半期データ用クエリ"""
+
+from typing import List, Callable
 from jrdb_model import KaisaiData
-from jra_tools.machine_learning.kaisai_loader import load
+from jra_tools.machine_learning.interface_adapter.ispecified_loader import (
+    SpecifiedLoader,
+)
 
 
 class QuarterKaisaiQuery:
     """四半期データ用クエリ"""
 
-    def __init__(self, year: int, quarter: int):
+    def __init__(
+        self,
+        year: int,
+        quarter: int,
+        loader_factory: Callable[[int, int], SpecifiedLoader],
+    ):
         assert 2000 <= year <= 2100, "2000年以降を指定してください"
         assert isinstance(year, int)
         self.year = year
         assert 1 <= quarter <= 4, "1 - 4を指定してください"
         self.quarter = quarter
+        self.loader = loader_factory(self._start, self._end)
 
     def load(self) -> List[KaisaiData]:
-        return load(self._start, self._end)
+        return self.loader.load()
 
     @property
     def _start(self) -> int:

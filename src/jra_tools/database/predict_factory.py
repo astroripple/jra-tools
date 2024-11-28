@@ -1,11 +1,12 @@
 """推論データを生成する"""
+
 from typing import List, Any
 from dataclasses import dataclass
 from jrdb_model import (
     PredictData,
     KaisaiData,
 )
-from ..machine_learning.input_creator import InputCreator
+from jra_tools.machine_learning.interface_adapter.input_creator import InputCreator
 
 
 @dataclass

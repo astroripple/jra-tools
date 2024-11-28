@@ -6,12 +6,11 @@ from .database.schedule import *
 from .database.predict_factory import *
 from .database.predict_race_factory import *
 
-from .machine_learning.category_data import *
-from .machine_learning.input_creator import *
-from .machine_learning.jrdbdummies import *
-from .machine_learning.kaisai_creator import *
-from .machine_learning.kaisai_loader import *
-from .machine_learning.label_creator import *
-from .machine_learning.labelutil import *
-from .machine_learning.training_tool import *
-from .machine_learning.payout_creator import *
+from .machine_learning.entity import *
+from .machine_learning.usecase import *
+from .machine_learning.interface_adapter import *
+from .machine_learning.interface_adapter.input_creator import *
+from .machine_learning.interface_adapter.payout_creator import *
+from .machine_learning.interface_adapter.quarter_kaisai_query import *
+from .machine_learning.interface_adapter.training_kaisai_query import *
+from .machine_learning.infrastructure import *

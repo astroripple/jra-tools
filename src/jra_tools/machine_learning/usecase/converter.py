@@ -2,8 +2,8 @@
 
 from typing import Callable, List, Optional
 from jrdb_model import KaisaiData
-from jra_tools.machine_learning.icreator import ICreator
-from jra_tools.machine_learning.kaisai_loader import IQuery
+from jra_tools.machine_learning.usecase.icreator import ICreator
+from jra_tools.machine_learning.usecase.iquery import IQuery
 
 CreatorFactory = Callable[[List[KaisaiData]], ICreator]
 

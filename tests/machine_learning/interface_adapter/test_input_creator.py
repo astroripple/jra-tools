@@ -2,7 +2,7 @@
 
 import os
 import numpy as np
-from jra_tools.machine_learning.icreator import ICreator
+from jra_tools.machine_learning.usecase.icreator import ICreator
 from jra_tools import InputCreator
 
 
