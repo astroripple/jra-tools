@@ -11,6 +11,7 @@ class LabelCreator:
     """ラベル作成クラス"""
 
     def __init__(self, kaisais: List[KaisaiData]):
+        self.kaisais = kaisais
         num_race = reduce(lambda x, y: x + len(y.races), kaisais, 0)
         num_max_horse = 18
         self.t_icchaku = np.zeros([num_race, num_max_horse])
