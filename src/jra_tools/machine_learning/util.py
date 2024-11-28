@@ -1,6 +1,7 @@
 """ツールのユースケース"""
 
 from functools import partial
+from jra_tools.machine_learning.infrastructure.mysql_loader import MysqlLoader
 from jra_tools.machine_learning.interface_adapter.input_creator import InputCreator
 from jra_tools.machine_learning.interface_adapter.payout_creator import PayoutCreator
 from jra_tools.machine_learning.interface_adapter.training_kaisai_query import (
@@ -24,7 +25,7 @@ def _create_training(start: int, end: int, only_input: bool):
     """
 
     converter = Converter(
-        TrainingKaisaiQuery(start, end),
+        TrainingKaisaiQuery(start, end, MysqlLoader),
         [InputCreator] if only_input else [InputCreator, PayoutCreator],
     )
     converter.save()
@@ -43,7 +44,7 @@ def _create_quarter(year: int, quarter: int, only_input: bool) -> None:
         only_input (bool, optional): 入力データのみを作成するか. Defaults to True.
     """
     converter = Converter(
-        QuarterKaisaiQuery(year, quarter),
+        QuarterKaisaiQuery(year, quarter, MysqlLoader),
         [InputCreator] if only_input else [InputCreator, PayoutCreator],
     )
     converter.save()
