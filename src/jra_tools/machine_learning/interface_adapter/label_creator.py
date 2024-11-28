@@ -1,6 +1,8 @@
 ﻿"""ラベルを作成する"""
+
 from typing import List
 from functools import reduce
+import pickle
 import numpy as np
 from jrdb_model import KaisaiData
 
@@ -39,3 +41,12 @@ class LabelCreator:
             self.t_yonchaku,
             self.t_gochaku,
         ]
+
+    def save(self, name: str):
+        """ラベルデータをローカルに保存する
+
+        Args:
+            name (str): ファイル名
+        """
+        with open(f"{name}.dump", mode="wb") as f:
+            pickle.dump(self.labels, f)
