@@ -27,7 +27,7 @@ def get_kaisais(start: int, end: int) -> List[KaisaiData]:
 
 @dataclass
 class MysqlLoader:
-    """ "MySQLからエンティティを取得する"""
+    """MySQLからエンティティを取得する"""
 
     start: int
     end: int
