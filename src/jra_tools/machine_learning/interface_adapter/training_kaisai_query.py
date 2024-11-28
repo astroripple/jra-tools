@@ -43,9 +43,7 @@ class TrainingKaisaiQuery:
     def period(self):
         """データセットの期間"""
         return (
-            (
-                "data"
-                if self.start == 2012 and self.end == 2018
-                else f"{self.start}_{self.end}"
-            ),
+            "data"
+            if self.start == 2012 and self.end == 2018
+            else f"{self.start}_{self.end}"
         )

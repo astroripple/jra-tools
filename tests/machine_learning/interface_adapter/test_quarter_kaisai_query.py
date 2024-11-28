@@ -26,3 +26,4 @@ def test_quarter_kaisai_query(mocker: MockerFixture):
     assert isinstance(query, IQuery)
     mock_loader_factory.assert_called_once_with(20000401, 20000630)
     mock_loader.load.assert_called_once_with()
+    assert query.period == "2000_04_06"
