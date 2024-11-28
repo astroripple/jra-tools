@@ -1,4 +1,4 @@
-"""utilのユニットテスト"""
+"""PayoutCreatorのユニットテスト"""
 
 import os
 import numpy as np
