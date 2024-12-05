@@ -1,10 +1,10 @@
 """トレーニング用ローダーのテスト"""
 
+from pytest_mock import MockerFixture
 from jra_tools.machine_learning.usecase.iquery import IQuery
 from jra_tools.machine_learning.interface_adapter.training_kaisai_query import (
     TrainingKaisaiQuery,
 )
-from pytest_mock import MockerFixture
 
 
 def test_training_kaisai_query(mocker: MockerFixture):
