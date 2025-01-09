@@ -1,10 +1,11 @@
 """トレーニングに利用する関数"""
 
-from typing import List
 from functools import reduce
+from typing import List
+
 import numpy as np
+from jrdb_model import BangumiData, KaisaiData, RacehorseData
 from sklearn.preprocessing import StandardScaler
-from jrdb_model import KaisaiData, BangumiData, RacehorseData
 
 
 def create_score_data_matrix(kaisais: List[KaisaiData]) -> np.ndarray:
@@ -99,19 +100,9 @@ def _kaisai_scores(kaisai: KaisaiData) -> List:
         kaisai.turf_baba_in,
         kaisai.turf_baba_center,
         kaisai.turf_baba_out,
-        kaisai.turf_baba_sa,
-        kaisai.turf_baba_straight_saiuchi,
-        kaisai.turf_baba_straight_in,
-        kaisai.turf_baba_straight_center,
-        kaisai.turf_baba_straight_out,
-        kaisai.turf_baba_straight_oosoto,
         kaisai.dart_baba_in,
-        kaisai.dart_baba_center,
         kaisai.dart_baba_out,
         kaisai.dart_baba_sa,
-        kaisai.renzoku_day,
-        kaisai.turf_length,
-        kaisai.precipitation,
     ]
 
 
@@ -124,7 +115,6 @@ def _horse_scores(horse: RacehorseData) -> List:
         horse.idm,
         horse.jockey_score,
         horse.info_score,
-        horse.routin,
         horse.train_score,
         horse.trainer_score,
         horse.train_code,
@@ -133,14 +123,9 @@ def _horse_scores(horse: RacehorseData) -> List:
         horse.gekiso_score,
         horse.kinryo,
         horse.kakutoku_money,
-        horse.shukaku_money,
-        horse.joken,
-        horse.ten_score,
         horse.pace_score,
         horse.up_score,
         horse.position_score,
-        horse.commit_weight,
-        horse.commit_weight_increase,
         horse.gekiso_order,
         horse.ls_score_order,
         horse.ten_score_order,
@@ -149,43 +134,22 @@ def _horse_scores(horse: RacehorseData) -> List:
         horse.position_score_order,
         horse.expect_jokey_win_rate,
         horse.expect_jokey_rentai_rate,
-        horse.taikei,
-        horse.senaka,
-        horse.do,
         horse.siri,
-        horse.tomo,
         horse.harabukuro,
         horse.head,
-        horse.neck,
-        horse.breast,
         horse.shoulder,
         horse.zencho,
         horse.kocho,
-        horse.maehaba,
         horse.ushirohaba,
-        horse.maetsunagi,
-        horse.ushirotsunagi,
-        horse.tail,
-        horse.furikata,
-        horse.horse_start_score,
-        horse.horse_latestart_rate,
         horse.mambaken_score,
         horse.runtimes_first_train,
-        horse.days_after_first_train,
-        horse.trainer_rank,
         horse.trainanalysis.oikiri_score,
         horse.trainanalysis.shiage_score,
-        horse.trainoikiri.kaisu,
         horse.trainoikiri.train_f,
-        horse.trainoikiri.ten_f,
-        horse.trainoikiri.mid_f,
         horse.trainoikiri.end_f,
-        horse.trainoikiri.ten_f_score,
         horse.trainoikiri.mid_f_score,
         horse.trainoikiri.end_f_score,
         horse.trainoikiri.oikiri_score,
-        horse.calculated_score.waku_win_rate,
-        horse.calculated_score.waku_rentai_rate,
     ]
 
 
