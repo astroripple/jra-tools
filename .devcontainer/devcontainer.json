@@ -50,7 +50,8 @@
         "ms-python.mypy-type-checker",
         "njpwerner.autodocstring",
         "KevinRose.vsc-python-indent",
-        "charliermarsh.ruff"
+        "charliermarsh.ruff",
+        "tamasfe.even-better-toml"
       ]
     }
   }
