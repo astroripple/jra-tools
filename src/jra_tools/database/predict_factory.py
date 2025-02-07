@@ -1,26 +1,29 @@
-"""推論データを生成する"""
+"""推論データを生成する."""
 
-from typing import List, Any
 from dataclasses import dataclass
+from typing import Any, List
+
 from jrdb_model import (
-    PredictData,
     KaisaiData,
+    PredictData,
 )
+
 from jra_tools.machine_learning.interface_adapter.input_creator import InputCreator
 
 
 @dataclass
 class PredictFactory:
-    """推論データ生成クラス"""
+    """推論データ生成クラス."""
 
     kaisais: List[KaisaiData]
     model: Any  # Kerasのモデルインスタンス
 
     def create(self) -> List[PredictData]:
-        """推論データを生成する
+        """推論データを生成する.
 
         Returns:
             List[PredictData]: 未登録の推論データ一覧
+
         """
         input_data = InputCreator(self.kaisais)
         preds = self.model.predict(input_data.x_data)
