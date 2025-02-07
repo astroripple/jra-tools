@@ -39,9 +39,9 @@ class PredictFactory:
             for r in k.races:
                 for h in r.racehorses:
                     hn = h.num - 1
-                    pp1 = preds[0][w][hn]
-                    pp2 = preds[1][w][hn]
-                    pp3 = preds[2][w][hn]
+                    pp1 = preds["activation_4"][w][hn]
+                    pp2 = preds["activation_5"][w][hn]
+                    pp3 = preds["activation_6"][w][hn]
                     rentai_rate = 1 - ((1 - pp1) * (1 - pp2))
                     fukusho_rate = 1 - ((1 - pp1) * (1 - pp2) * (1 - pp3))
                     entities.append(
