@@ -1,14 +1,15 @@
-"""開催データに紐づくデータを結合した状態でロードする"""
+"""開催データに紐づくデータを結合した状態でロードする."""
 
-from typing import List, Tuple
-from dataclasses import dataclass
 import datetime as dt
+from dataclasses import dataclass
+from typing import List, Tuple
+
 from jrdb_model import KaisaiData, app
 from sqlalchemy.orm import joinedload
 
 
 def get_kaisais(start: int, end: int) -> List[KaisaiData]:
-    """指定した期間の開催データを取得する
+    """指定した期間の開催データを取得する.
 
     Args:
         start (int): YYYYMMDD
@@ -16,6 +17,7 @@ def get_kaisais(start: int, end: int) -> List[KaisaiData]:
 
     Returns:
         list[KaisaiData]: 開催データ一覧
+
     """
     with app.app_context():
         return (
@@ -27,7 +29,7 @@ def get_kaisais(start: int, end: int) -> List[KaisaiData]:
 
 @dataclass
 class MysqlLoader:
-    """MySQLからエンティティを取得する"""
+    """MySQLからエンティティを取得する."""
 
     start: int
     end: int
@@ -41,7 +43,7 @@ class MysqlLoader:
 
 
 def load(start: int, end: int) -> List[KaisaiData]:
-    """データを1年毎にまとめてロードして、マージ結果を取得する
+    """データを1年毎にまとめてロードして、マージ結果を取得する.
 
     Args:
         start (int): YYYYMMDD
@@ -49,6 +51,7 @@ def load(start: int, end: int) -> List[KaisaiData]:
 
     Returns:
         List[KaisaiData]: 開催データ一覧
+
     """
     return [
         kaisai
@@ -64,9 +67,8 @@ def _periods(s: dt.datetime, e: dt.datetime) -> List[Tuple[dt.datetime, dt.datet
             *[_period(i) for i in range(s.year + 1, e.year)],
             (dt.datetime(year=e.year, month=1, day=1), e),
         ]
-    if s.year == e.year:
-        if s <= e:
-            return [(s, e)]
+    if s.year == e.year and s <= e:
+        return [(s, e)]
     raise RuntimeError("開始日 <= 終了日となるように入力してください")
 
 
