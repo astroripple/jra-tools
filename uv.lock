@@ -457,8 +457,8 @@ wheels = [
 
 [[package]]
 name = "jra-tools"
-version = "0.0.14"
-source = { virtual = "." }
+version = "0.0.15"
+source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
     { name = "beautifulsoup4" },

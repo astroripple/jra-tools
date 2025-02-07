@@ -1,6 +1,10 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "jra-tools"
-version = "0.0.14"
+version = "0.0.15"
 authors = [{name = "Requrd", email = "requrd1989@gmail.com"}]
 description = "Data Analisys Tools for JRDB"
 classifiers = [
@@ -27,6 +31,9 @@ content-type = "text/markdown"
 [project.urls]
 Homepage = "https://github.com/astroripple/jra-tools"
 "Bug Tracker" = "https://github.com/astroripple/jra-tools/issues"
+
+[tool.setuptools]
+license-files = []
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
