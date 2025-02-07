@@ -1,4 +1,4 @@
-"""トレーニングに利用する関数"""
+"""トレーニングに利用する関数."""
 
 from functools import reduce
 from typing import List
@@ -9,13 +9,14 @@ from sklearn.preprocessing import StandardScaler
 
 
 def create_score_data_matrix(kaisais: List[KaisaiData]) -> np.ndarray:
-    """開催データからトレーニング用データマトリクスを作成する
+    """開催データからトレーニング用データマトリクスを作成する.
 
     Args:
         kaisais (List[KaisaiData]): 開催データ
 
     Returns:
         np.ndarray: 数値データ行列[レース, 馬, 特徴量]
+
     """
     base_matrix = np.zeros(
         [
@@ -52,13 +53,14 @@ def _set_race_scores(
 
 
 def standardize(matrix: np.ndarray) -> np.ndarray:
-    """行列に標準化処理を施す
+    """行列に標準化処理を施す.
 
     Args:
         matrix (np.ndarray): 数値データ行列_
 
     Returns:
         np.ndarray: 標準化済み行列
+
     """
     sds = matrix
     for i, element in enumerate(matrix):
@@ -69,13 +71,14 @@ def standardize(matrix: np.ndarray) -> np.ndarray:
 
 
 def number_of_score_features(kaisai: KaisaiData) -> int:
-    """開催データから特徴量の数量を取得する
+    """開催データから特徴量の数量を取得する.
 
     Args:
         kaisai (KaisaiData): 開催データ
 
     Returns:
         int: 特徴量の数
+
     """
     return len(
         _kaisai_scores(kaisai)
@@ -98,16 +101,11 @@ def _set_score_data(
 def _kaisai_scores(kaisai: KaisaiData) -> List:
     return [
         kaisai.turf_baba_in,
-        kaisai.turf_baba_center,
-        kaisai.turf_baba_out,
-        kaisai.dart_baba_in,
-        kaisai.dart_baba_out,
-        kaisai.dart_baba_sa,
     ]
 
 
 def _race_scores(race: BangumiData):
-    return [race.num_of_all_horse]
+    return []
 
 
 def _horse_scores(horse: RacehorseData) -> List:
@@ -118,38 +116,12 @@ def _horse_scores(horse: RacehorseData) -> List:
         horse.train_score,
         horse.trainer_score,
         horse.train_code,
-        horse.trainer_hyoka_code,
         horse.jockey_rate_rentai,
-        horse.gekiso_score,
-        horse.kinryo,
         horse.kakutoku_money,
-        horse.pace_score,
-        horse.up_score,
-        horse.position_score,
-        horse.gekiso_order,
         horse.ls_score_order,
-        horse.ten_score_order,
-        horse.pace_score_order,
         horse.up_score_order,
-        horse.position_score_order,
         horse.expect_jokey_win_rate,
         horse.expect_jokey_rentai_rate,
-        horse.siri,
-        horse.harabukuro,
-        horse.head,
-        horse.shoulder,
-        horse.zencho,
-        horse.kocho,
-        horse.ushirohaba,
-        horse.mambaken_score,
-        horse.runtimes_first_train,
-        horse.trainanalysis.oikiri_score,
-        horse.trainanalysis.shiage_score,
-        horse.trainoikiri.train_f,
-        horse.trainoikiri.end_f,
-        horse.trainoikiri.mid_f_score,
-        horse.trainoikiri.end_f_score,
-        horse.trainoikiri.oikiri_score,
         horse.calculated_score.waku_win_rate,
         horse.calculated_score.waku_rentai_rate,
     ]
