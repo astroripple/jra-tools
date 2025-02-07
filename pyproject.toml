@@ -51,4 +51,5 @@ dev = [
     "pytest-mock>=3.14.0",
     "pytest>=8.3.3",
     "ruff>=0.9.5",
+    "types-tensorflow>=2.18.0.20241227",
 ]
