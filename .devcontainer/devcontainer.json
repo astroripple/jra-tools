@@ -11,9 +11,6 @@
   "features": {
     "ghcr.io/jsburckhardt/devcontainer-features/uv:1": {}
   },
-  "mounts": [
-    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
-  ],
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
   // Uncomment the next line to run commands after the container is created.
@@ -26,6 +23,7 @@
         "python.defaultInterpreterPath": ".venv/bin/python",
         "python.testing.pytestArgs": ["tests", "--capture=tee-sys", "-vv"],
         "python.testing.pytestEnabled": true,
+        "ruff.path": ["${workspaceFolder}/.venv/bin/ruff"],
         "mypy-type-checker.path": ["${workspaceFolder}/.venv/bin/mypy"],
         "mypy-type-checker.args": [
           "--config=${workspaceFolder}/pyproject.toml"
