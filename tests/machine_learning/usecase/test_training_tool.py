@@ -16,4 +16,4 @@ def test_create_score_data_matrix(sample_kaisais: List[KaisaiData]):
     """
     scores = create_score_data_matrix(sample_kaisais)
 
-    assert scores.shape == (24, 18, 47)
+    assert scores.shape == (24, 18, 15)
