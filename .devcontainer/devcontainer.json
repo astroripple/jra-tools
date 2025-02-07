@@ -1,53 +1,64 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
 {
-	"name": "Existing Dockerfile",
-	"build": {
-		// Sets the run context to one level up instead of the .devcontainer folder.
-		"context": "..",
-		// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
-		"dockerfile": "./Dockerfile"
-	},
-	// "runArgs": ["--network=host", "--rm", "--env-file",".devcontainer/devcontainer.env"],
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	"features": {
-		"ghcr.io/jsburckhardt/devcontainer-features/uv:1": {}
-	},
-	"mounts": [
-		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
-	],
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-	// Uncomment the next line to run commands after the container is created.
-	"postCreateCommand": "./.devcontainer/postCreateCommand.sh",
-	// Configure tool-specific properties.
-	"customizations": {
-		"vscode": {
-			"settings": {
-				"editor.renderWhitespace": "all",
-				"python.defaultInterpreterPath": ".venv/bin/python",
-				"python.testing.pytestArgs": [
-					"tests",
-					"--capture=tee-sys",
-					"-vv"
-				],
-				"python.testing.pytestEnabled": true,
-				"mypy-type-checker.path": [
-					"${workspaceFolder}/.venv/bin/mypy"
-				],
-				"mypy-type-checker.args": [
-					"--config=${workspaceFolder}/pyproject.toml"
-				],
-			},
-			"extensions": [
-				"ms-python.python",
-				"ms-python.black-formatter",
-				"ms-python.pylint",
-				"ms-python.mypy-type-checker",
-				"njpwerner.autodocstring"
-			]
-		}
-	},
-	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "devcontainer"
+  "name": "Existing Dockerfile",
+  "image": "mcr.microsoft.com/devcontainers/python:1.1.9-3.8-bookworm",
+  "containerEnv": {
+    "DB": "mariadb+pymysql://user:pass@host_name/database_name"
+  },
+  // "runArgs": ["--network=host", "--rm", "--env-file",".devcontainer/devcontainer.env"],
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    "ghcr.io/jsburckhardt/devcontainer-features/uv:1": {}
+  },
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+  // Uncomment the next line to run commands after the container is created.
+  "postCreateCommand": "./.devcontainer/postCreateCommand.sh",
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.renderWhitespace": "all",
+        "python.defaultInterpreterPath": ".venv/bin/python",
+        "python.testing.pytestArgs": ["tests", "--capture=tee-sys", "-vv"],
+        "python.testing.pytestEnabled": true,
+        "ruff.path": ["${workspaceFolder}/.venv/bin/ruff"],
+        "mypy-type-checker.path": ["${workspaceFolder}/.venv/bin/mypy"],
+        "mypy-type-checker.args": [
+          "--config=${workspaceFolder}/pyproject.toml"
+        ],
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+          }
+        },
+        "[json][jsonc]": {
+          "editor": {
+            "defaultFormatter": "esbenp.prettier-vscode",
+            "formatOnSave": true,
+            "codeActionsOnSave": {
+              "source": {
+                "fixAll": "explicit"
+              }
+            }
+          }
+        }
+      },
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "ms-python.python",
+        "ms-python.mypy-type-checker",
+        "njpwerner.autodocstring",
+        "KevinRose.vsc-python-indent",
+        "charliermarsh.ruff",
+        "tamasfe.even-better-toml"
+      ]
+    }
+  }
+  // Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "devcontainer"
 }

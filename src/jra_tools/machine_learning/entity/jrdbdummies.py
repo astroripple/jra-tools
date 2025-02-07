@@ -36,7 +36,7 @@ class CategoryGetter:
             return self.categories(12, 10)
         if 3000 < value <= 3200:
             return self.categories(12, 11)
-        if 3200 < value:
+        if value > 3200:
             return self.categories(12, 12)
         return self.categories(12, (value // 200) - 4)
 
@@ -168,7 +168,7 @@ class CategoryGetter:
 
     # 独自メソッド利用
     def getBacode(self, value):
-        if (1 > value) or (value > 10):
+        if (value < 1) or (value > 10):
             value = 11
         return self.categories(11, value)
 
