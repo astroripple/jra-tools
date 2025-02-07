@@ -1,22 +1,28 @@
 """推論データを生成する."""
 
-from dataclasses import dataclass
-from typing import Any, List
+from typing import List
 
 from jrdb_model import (
     KaisaiData,
     PredictData,
 )
+from keras import Model
 
 from jra_tools.machine_learning.interface_adapter.input_creator import InputCreator
 
 
-@dataclass
 class PredictFactory:
     """推論データ生成クラス."""
 
-    kaisais: List[KaisaiData]
-    model: Any  # Kerasのモデルインスタンス
+    def __init__(self, kaisais: List[KaisaiData], model: Model):
+        for kaisai in kaisais:
+            if not isinstance(kaisai, KaisaiData):
+                raise TypeError("開催データではありません")
+        self.kaisais = kaisais
+
+        if not isinstance(model, Model):
+            raise TypeError("Keras V3のモデルではありません")
+        self.model = model
 
     def create(self) -> List[PredictData]:
         """推論データを生成する.
