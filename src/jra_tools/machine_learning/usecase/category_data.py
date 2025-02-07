@@ -1,20 +1,22 @@
-"""カテゴリ変数を取得する"""
+"""カテゴリ変数を取得する."""
 
 from typing import List
 
 import numpy as np
-from jra_tools.machine_learning.entity.jrdbdummies import CategoryGetter
 from jrdb_model import BangumiData, KaisaiData, RacehorseData
+
+from jra_tools.machine_learning.entity.jrdbdummies import CategoryGetter
 
 
 def get_category_data(kaisais: List[KaisaiData]) -> np.ndarray:
-    """開催データからカテゴリデータを取得する
+    """開催データからカテゴリデータを取得する.
 
     Args:
         kaisais (List[KaisaiData]): 開催データ
 
     Returns:
         np.ndarray: 開催データマトリクス
+
     """
     return _convert_to_matrix(_get_categories(kaisais))
 
@@ -48,12 +50,7 @@ def _get_category(
     kaisai: KaisaiData, race: BangumiData, horse: RacehorseData
 ) -> np.ndarray:
     cg = CategoryGetter()
-    return np.hstack(
-        (
-            cg.getWaku(horse.waku),
-            cg.getBanushikaicode(_filter_str_to_int(horse.banushikai_code)),
-        )
-    )
+    return np.hstack((cg.getWaku(horse.waku),))
 
 
 def _filter_str_to_int(value):

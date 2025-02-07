@@ -16,4 +16,4 @@ def test_get_category_data(sample_kaisais: List[KaisaiData]):
     """
     categories = get_category_data(sample_kaisais)
 
-    assert categories.shape == (24, 18, 19)
+    assert categories.shape == (24, 18, 8)
