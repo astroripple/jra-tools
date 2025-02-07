@@ -38,6 +38,16 @@ include-package-data = false
 where = ["src"]
 namespaces = false
 
+[tool.ruff.lint]
+select = ["RUF", "I", "SIM", "FURB", "PIE", "PERF", "C4", "B", "PL", "D", "S",]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["S101"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+
 [dependency-groups]
 dev = [
     "aioresponses>=0.7.6",
