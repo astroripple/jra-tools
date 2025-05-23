@@ -1,5 +1,6 @@
-from jrdb_model import sesobj, UmarenOddsData, WideOddsData, WakurenOddsData, app
 import csv
+
+from jrdb_model import UmarenOddsData, WakurenOddsData, WideOddsData, create_app, db
 
 
 class BaoImporter:
@@ -12,7 +13,7 @@ class BaoImporter:
             }
             for kaisai in kaisais
         ]
-        self.racekeys = [race.racekey for kaisai in kaisais for race in kaisai.races ]
+        self.racekeys = [race.racekey for kaisai in kaisais for race in kaisai.races]
 
     def getKaisaiInfo(self, kaisaikey):
         return {
@@ -50,7 +51,10 @@ class BaoImporter:
         for i, odd_str in enumerate(odds):
             for j in range(0, len(odd_str), 6):
                 odds_dict.update(
-                    {f"{i+1}-{i+int((j+6)/6)+1}": int(odd_str[j : j + 6]) / 10}
+                    {
+                        f"{i + 1}-{i + int((j + 6) / 6) + 1}": int(odd_str[j : j + 6])
+                        / 10
+                    }
                 )
         return odds_dict
 
@@ -60,7 +64,7 @@ class BaoImporter:
             for j in range(0, len(odd_str), 10):
                 odds_dict.update(
                     {
-                        f"{i+1}-{i+int((j+10)/10)+1}": {
+                        f"{i + 1}-{i + int((j + 10) / 10) + 1}": {
                             "min": int(odd_str[j : j + 5]) / 10,
                             "max": int(odd_str[j + 5 : j + 10]) / 10,
                         }
@@ -75,7 +79,7 @@ class BaoImporter:
             for j in range(i, 8):
                 odd = odds_str[pos : pos + 5].strip()
                 odd = int(odd) / 10 if odd else None
-                odds_dict.update({f"{i+1}-{j+1}": odd})
+                odds_dict.update({f"{i + 1}-{j + 1}": odd})
                 pos += 5
         return odds_dict
 
@@ -87,11 +91,14 @@ class BaoImporter:
         with open(fileName) as f:
             reader = csv.reader(f)
             header = next(reader)
+            app = create_app()
             with app.app_context():
                 for row in reader:
                     racekey = self.convertRaceCodeToRaceKey(str(int(float(row[2]))))
                     if racekey:
-                        odd = UmarenOddsData() if "umaren" in fileName else WideOddsData()
+                        odd = (
+                            UmarenOddsData() if "umaren" in fileName else WideOddsData()
+                        )
                         odd.racekey = racekey
                         odd.data_kbn = self._parseInt(row[0])
                         odd.registered_horses = self._parseInt(row[4])
@@ -104,8 +111,8 @@ class BaoImporter:
                         )
                         odd.sum_of_all_bought_count = self._parseInt(row[8])
                         if racekey in self.racekeys:
-                            sesobj.add(odd)
-                sesobj.commit()
+                            db.session.add(odd)
+                db.session.commit()
 
     def importWakurenCsv(self, fileName):
         with open(fileName) as f:
@@ -124,8 +131,8 @@ class BaoImporter:
                         odd.all_odds = self.getWakurenOdds(row[12])
                         odd.sum_of_all_bought_count = self._parseInt(row[15])
                         if racekey in self.racekeys:
-                            sesobj.add(odd)
-                sesobj.commit()
+                            db.session.add(odd)
+                db.session.commit()
 
     def _parseInt(self, str):
-        return 0 if str == '' else str
+        return 0 if str == "" else str
