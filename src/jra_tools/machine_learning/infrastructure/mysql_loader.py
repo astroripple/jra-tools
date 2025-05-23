@@ -4,7 +4,7 @@ import datetime as dt
 from dataclasses import dataclass
 from typing import List, Tuple
 
-from jrdb_model import KaisaiData, app
+from jrdb_model import KaisaiData, create_app
 from sqlalchemy.orm import joinedload
 
 
@@ -19,6 +19,7 @@ def get_kaisais(start: int, end: int) -> List[KaisaiData]:
         list[KaisaiData]: 開催データ一覧
 
     """
+    app = create_app()
     with app.app_context():
         return (
             KaisaiData.query.filter(KaisaiData.ymd >= start, KaisaiData.ymd <= end)
