@@ -487,7 +487,7 @@ dev = [
 requires-dist = [
     { name = "aiohttp", specifier = ">=3.8.5" },
     { name = "beautifulsoup4", specifier = ">=4.11.1" },
-    { name = "jrdb-model", specifier = ">=0.2.3" },
+    { name = "jrdb-model", specifier = ">=0.2.10" },
     { name = "lxml", specifier = ">=4.9.0" },
     { name = "numpy", specifier = ">1.24.4" },
     { name = "requests", specifier = ">=2.31.0" },
@@ -509,15 +509,15 @@ dev = [
 
 [[package]]
 name = "jrdb-model"
-version = "0.2.3"
+version = "0.2.10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "flask-migrate" },
     { name = "pymysql" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/57/fa/0086beea2f338d5d063bc3273671ef5f23f13282092cff916cdf294a98ad/jrdb_model-0.2.3.tar.gz", hash = "sha256:d208c15e972bede1df8e80a25913824efab296e2c05a6f52e74ad39f179c356c", size = 10448, upload-time = "2025-05-21T16:10:11.058Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/37/ca/ab3c273faad81ad2c1dd0e38509776158a49bd9e31cad7b58c6a6dff83c3/jrdb_model-0.2.10.tar.gz", hash = "sha256:c8db6be8ddcfa318c71490099ce1f750e56e0fd4beb447b00de57b4c1fb3bc10", size = 10768, upload-time = "2025-05-27T09:44:19.549Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/58/f3/95a0af026f0750293699a3f15485516e513054649a97d4a1f544b5a9a283/jrdb_model-0.2.3-py3-none-any.whl", hash = "sha256:cee77cbfdf77f194f46540011799986154281826da682db9d798a01a44795d19", size = 16737, upload-time = "2025-05-21T16:10:10.038Z" },
+    { url = "https://files.pythonhosted.org/packages/40/7d/c12f31df3e771e622e626abfa10adadc7600a0c71303c2c3b0da9dfe5761/jrdb_model-0.2.10-py3-none-any.whl", hash = "sha256:1fdffce952fd00d7504a35efbba3bcce843be88766785bbfaccdb07103f1a02d", size = 17207, upload-time = "2025-05-27T09:44:18.179Z" },
 ]
 
 [[package]]
