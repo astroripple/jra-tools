@@ -83,3 +83,47 @@ def test_missing_days_is_empty_when_all_days_are_registered(
     )
 
     assert db_checker.missing_days(2025) == []
+
+
+def test_missing_kaisais_finds_a_missing_venue_on_a_registered_day(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, mocker: MockerFixture
+):
+    """同じ日のほかの場が登録済みでも、未登録の場の開催を返す."""
+    _kaisai_db(
+        [("052513", 20250208), ("102515", 20250208), ("082513", 20250210)],
+        tmp_path,
+        monkeypatch,
+    )
+    mocker.patch(
+        "jra_tools.database.schedule.annual_kaisais",
+        mocker.AsyncMock(
+            return_value=[
+                (20250208, "052513"),
+                (20250208, "102515"),
+                (20250209, "052514"),
+                (20250209, "082514"),
+                (20250210, "082513"),
+            ]
+        ),
+    )
+
+    assert db_checker.missing_kaisais(2025) == [
+        (20250209, "052514"),
+        (20250209, "082514"),
+    ]
+
+
+def test_missing_kaisais_ignores_the_cancelled_day_of_a_substitute_race(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, mocker: MockerFixture
+):
+    """途中で中止して代替日に残りを開催した場合、DBの中止日の行は未登録の判定に関係しない.
+
+    2011年1回小倉7日はDBに2/12(中止の日)と2/14(代替日)の2行、Yahoo競馬には2/14だけ。
+    """
+    _kaisai_db([("101117", 20110212), ("101117", 20110214)], tmp_path, monkeypatch)
+    mocker.patch(
+        "jra_tools.database.schedule.annual_kaisais",
+        mocker.AsyncMock(return_value=[(20110214, "101117")]),
+    )
+
+    assert db_checker.missing_kaisais(2011) == []
