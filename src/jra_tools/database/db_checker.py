@@ -1,13 +1,18 @@
 """DBに登録済みの開催日を確認する."""
 
+import asyncio
+
 from jrdb_model import KaisaiData, create_app
 
 from . import schedule
 
 
 def missing_days(year):
-    """指定年の開催日のうち、DBに未登録の日付を返す."""
-    open_days = schedule.annual_schedule(year)
+    """指定年の開催日のうち、DBに未登録の日付を返す.
+
+    開催日はYahoo競馬の年間スケジュール(代替日を含む)。同期の関数なので、イベントループの中からは呼べない。
+    """
+    open_days = asyncio.run(schedule.annual_schedule(year))
     return sorted(set(open_days) - set(db_days(year)))
 
 

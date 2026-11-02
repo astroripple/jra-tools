@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jra-tools"
-version = "0.1.7"
+version = "0.1.8"
 authors = [{ name = "Requrd", email = "requrd1989@gmail.com" }]
 description = "Data Analisys Tools for JRDB"
 classifiers = [
