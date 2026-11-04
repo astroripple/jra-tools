@@ -1,8 +1,13 @@
 """model・featuresのビューをPostgresに反映する.
 
 ビューはデータを持たないので、マイグレーションはしない。定義(ハッシュ)が変わったときだけ、
-1トランザクションで管理するスキーマを作り直してビューを作り、ハッシュを記録する。
+1トランザクションで、管理するスキーマのビューと関数を消して作り直し、ハッシュを記録する。
+スキーマは消さない。同じスキーマに置いた表(推論の結果など)には触らない。
 定義とstagingの列が合わなければCREATE VIEWでPostgresがエラーにし、全体が戻る(今のビューが残る)。
+
+ハッシュを記録する表meta.view_versionは作らない。表を作るマイグレーション
+(sazanami-batchのmigrate-model-and-meta-tables)が作り、ここは読み書きだけをする。
+表の名前と列(digest・applied_at・label)は、そのマイグレーションとの約束。
 """
 
 import logging
@@ -42,6 +47,10 @@ class ApplyOptions:
 DEFAULT_OPTIONS = ApplyOptions()
 
 
+class ViewVersionTableMissing(RuntimeError):
+    """meta.view_versionがない. 表を作るマイグレーションを先に流していない."""
+
+
 @dataclass(frozen=True)
 class TestFailure:
     """失敗したテスト."""
@@ -55,7 +64,7 @@ def apply_views(
 ) -> bool:
     """定義が変わっていれば、ビューを作り直す.
 
-    スキーマを作り直すときの排他ロックは、読んでいる最中のクエリ(Metabaseなど)が終わるまで待つ。
+    ビューを作り直すときの排他ロックは、読んでいる最中のクエリ(Metabaseなど)が終わるまで待つ。
     待っている間は新しいクエリも止まるため、lock_timeoutで諦めて、間を置いてやり直す。
 
     Args:
@@ -65,6 +74,9 @@ def apply_views(
 
     Returns:
         bool: 作り直したらTrue。定義が変わっていなければFalse
+
+    Raises:
+        ViewVersionTableMissing: meta.view_versionがない
 
     """
     for attempt in range(options.retries + 1):
@@ -122,15 +134,19 @@ def _apply(conn: Connection, view_set: ViewSet, options: ApplyOptions) -> bool:
         {"timeout": options.lock_timeout},
     )
     conn.execute(text("select pg_advisory_xact_lock(:key)"), {"key": ADVISORY_LOCK_KEY})
+    if conn.execute(text("select to_regclass('meta.view_version')")).scalar() is None:
+        raise ViewVersionTableMissing(
+            "meta.view_versionがありません。表を作るマイグレーション"
+            "(sazanami-batchのmigrate-model-and-meta-tables)を先に流してください"
+        )
     if applied_digest(conn) == view_set.digest:
         _logger.info("ビューの定義は変わっていません(%s)", view_set.digest[:12])
         return False
     _logger.info("ビューを作り直します(%s)", view_set.digest[:12])
     quote = conn.dialect.identifier_preparer.quote
     for schema in view_set.schemas:
-        # ほかのスキーマに置いた、このスキーマに依存するビュー(sandboxなど)も消える
-        conn.exec_driver_sql(f"drop schema if exists {quote(schema)} cascade")
-        conn.exec_driver_sql(f"create schema {quote(schema)}")
+        conn.exec_driver_sql(f"create schema if not exists {quote(schema)}")
+    _drop_views_and_routines(conn, view_set.schemas)
     for sql in view_set.functions:
         _execute_definition(conn, sql)
     for view in view_set.views:
@@ -146,19 +162,56 @@ def _apply(conn: Connection, view_set: ViewSet, options: ApplyOptions) -> bool:
             conn.exec_driver_sql(
                 f"grant select on all tables in schema {quote(schema)} to {quote(reader)}"
             )
-    conn.exec_driver_sql("create schema if not exists meta")
-    conn.exec_driver_sql(
-        "create table if not exists meta.view_version ("
-        " digest text not null,"
-        " applied_at timestamptz not null default now(),"
-        " label text not null default '')"
-    )
     conn.execute(
         text("insert into meta.view_version (digest, label) values (:digest, :label)"),
         {"digest": view_set.digest, "label": options.label},
     )
     _logger.info("ビューを%d個作りました", len(view_set.views))
     return True
+
+
+def _drop_views_and_routines(conn: Connection, schemas: Tuple[str, ...]) -> None:
+    """管理するスキーマのビューと関数を消す. 表(マテリアライズドビューを含む)は残す.
+
+    ビューは、ほかのスキーマに置いた、これに依存するビュー(sandboxなど)も消える(CASCADE)。
+    関数はCASCADEにしない。表の列の既定値などが関数を使っていれば、黙って消さずにエラーで止める。
+    1つのDROP文にまとめるので、消すものどうしの依存(ビューが関数を使うなど)は順を気にしなくてよい。
+    拡張機能が作ったものは消さない。
+    """
+    views = (
+        conn.execute(
+            text(
+                "select c.oid::regclass::text from pg_class c"
+                " join pg_namespace n on n.oid = c.relnamespace"
+                " where n.nspname = any(:schemas) and c.relkind = 'v'"
+                " and not exists (select 1 from pg_depend d"
+                " where d.classid = 'pg_class'::regclass and d.objid = c.oid"
+                " and d.deptype = 'e')"
+            ),
+            {"schemas": list(schemas)},
+        )
+        .scalars()
+        .all()
+    )
+    if views:
+        conn.exec_driver_sql(f"drop view {', '.join(views)} cascade")
+    routines = (
+        conn.execute(
+            text(
+                "select p.oid::regprocedure::text from pg_proc p"
+                " join pg_namespace n on n.oid = p.pronamespace"
+                " where n.nspname = any(:schemas) and p.prokind in ('f', 'p', 'a')"
+                " and not exists (select 1 from pg_depend d"
+                " where d.classid = 'pg_proc'::regclass and d.objid = p.oid"
+                " and d.deptype = 'e')"
+            ),
+            {"schemas": list(schemas)},
+        )
+        .scalars()
+        .all()
+    )
+    if routines:
+        conn.exec_driver_sql(f"drop routine {', '.join(routines)}")
 
 
 def _execute_definition(conn: Connection, sql: str, cursor: Any = None) -> None:
