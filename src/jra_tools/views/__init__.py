@@ -6,6 +6,7 @@
 from jra_tools.views.apply import (
     ApplyOptions,
     TestFailure,
+    ViewVersionTableMissing,
     applied_digest,
     apply_views,
     run_view_tests,
@@ -24,6 +25,7 @@ __all__ = [
     "View",
     "ViewSet",
     "ViewTest",
+    "ViewVersionTableMissing",
     "applied_digest",
     "apply_views",
     "load_view_set",

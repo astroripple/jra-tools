@@ -15,7 +15,8 @@ views.yamlの例:
       - model.races
       - model.entries
 
-- schemas: apply_viewsが作り直すスキーマ。ビューはこのどれかに置く
+- schemas: apply_viewsがビューと関数を作り直すスキーマ。ビューと関数はこのどれかに置く。
+  スキーマ自体と、そこに置いた表は消さない
 - functions: ビューより先に流すSQL(共通の変換の関数など)。省略できる
 - views: 「スキーマ.ビュー名」を作る順に並べる。SQLは<スキーマ>/<ビュー名>.sql
 """
