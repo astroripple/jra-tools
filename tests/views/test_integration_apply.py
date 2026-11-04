@@ -55,7 +55,7 @@ def engine() -> Iterator[Engine]:
         conn.exec_driver_sql(
             "insert into staging.races values ('01', 1200, 'A S'), ('02', 1600, 'B')"
         )
-        # 表を作るマイグレーション(sazanami-batchのmigrate-model-and-meta-tables)の代わり
+        # 表を作るコマンド(sazanami-batchのapply-model-and-meta-tables)の代わり
         conn.exec_driver_sql("create schema meta")
         conn.exec_driver_sql(
             "create table meta.view_version ("
@@ -105,7 +105,7 @@ def test_stops_without_view_version_table(engine: Engine):
     """meta.view_versionがなければ、何も作らずに止まる."""
     with engine.begin() as conn:
         conn.exec_driver_sql("drop table meta.view_version")
-    with pytest.raises(ViewVersionTableMissing, match="migrate-model-and-meta-tables"):
+    with pytest.raises(ViewVersionTableMissing, match="apply-model-and-meta-tables"):
         apply_views(engine, _view_set())
     with engine.connect() as conn:
         assert conn.execute(text("select to_regclass('model.races')")).scalar() is None

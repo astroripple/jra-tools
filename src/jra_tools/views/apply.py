@@ -5,9 +5,9 @@
 スキーマは消さない。同じスキーマに置いた表(推論の結果など)には触らない。
 定義とstagingの列が合わなければCREATE VIEWでPostgresがエラーにし、全体が戻る(今のビューが残る)。
 
-ハッシュを記録する表meta.view_versionは作らない。表を作るマイグレーション
-(sazanami-batchのmigrate-model-and-meta-tables)が作り、ここは読み書きだけをする。
-表の名前と列(digest・applied_at・label)は、そのマイグレーションとの約束。
+ハッシュを記録する表meta.view_versionは作らない。表を作るコマンド
+(sazanami-batchのapply-model-and-meta-tables)が作り、ここは読み書きだけをする。
+表の名前と列(digest・applied_at・label)は、そのコマンドとの約束。
 """
 
 import logging
@@ -48,7 +48,7 @@ DEFAULT_OPTIONS = ApplyOptions()
 
 
 class ViewVersionTableMissing(RuntimeError):
-    """meta.view_versionがない. 表を作るマイグレーションを先に流していない."""
+    """meta.view_versionがない. 表を作るコマンドを先に流していない."""
 
 
 @dataclass(frozen=True)
@@ -136,8 +136,8 @@ def _apply(conn: Connection, view_set: ViewSet, options: ApplyOptions) -> bool:
     conn.execute(text("select pg_advisory_xact_lock(:key)"), {"key": ADVISORY_LOCK_KEY})
     if conn.execute(text("select to_regclass('meta.view_version')")).scalar() is None:
         raise ViewVersionTableMissing(
-            "meta.view_versionがありません。表を作るマイグレーション"
-            "(sazanami-batchのmigrate-model-and-meta-tables)を先に流してください"
+            "meta.view_versionがありません。表を作るコマンド"
+            "(sazanami-batchのapply-model-and-meta-tables)を先に流してください"
         )
     if applied_digest(conn) == view_set.digest:
         _logger.info("ビューの定義は変わっていません(%s)", view_set.digest[:12])
