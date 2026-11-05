@@ -1,5 +1,6 @@
 """特徴量の仕様のユニットテスト."""
 
+from datetime import date
 from pathlib import Path
 
 import pytest
@@ -172,3 +173,44 @@ def test_digest_without_source():
 
     with pytest.raises(ValueError, match="view_digest"):
         parse_feature_spec(data)
+
+
+def test_training_period(tmp_path: Path):
+    """学習期間を書いた仕様は、日付として読み、書き出して読み戻せる."""
+    spec = parse_feature_spec(
+        _data(
+            source="features.entries_v1",
+            train_from=date(2013, 1, 1),
+            train_to="2019-12-31",
+        )
+    )
+    path = tmp_path / "spec.yaml"
+    save_feature_spec(spec, path)
+
+    assert (spec.train_from, spec.train_to) == (date(2013, 1, 1), date(2019, 12, 31))
+    assert "train_from: 2013-01-01" in path.read_text(encoding="utf-8")
+    assert load_feature_spec(path) == spec
+
+
+def test_training_period_is_optional(tmp_path: Path):
+    """学習期間は省略でき、書き出しても増えない."""
+    spec = default_feature_spec()
+    path = tmp_path / "spec.yaml"
+    save_feature_spec(spec, path)
+
+    assert (spec.train_from, spec.train_to) == (None, None)
+    assert "train_from" not in path.read_text(encoding="utf-8")
+    assert "train_to" not in path.read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize(
+    ("period", "message"),
+    [
+        ({"train_from": date(2013, 1, 1)}, "両方"),
+        ({"train_from": date(2020, 1, 1), "train_to": date(2019, 12, 31)}, "より後"),
+    ],
+)
+def test_invalid_training_period(period, message):
+    """学習期間は両方書き、初日は最終日より後にしない."""
+    with pytest.raises(ValueError, match=message):
+        parse_feature_spec(_data(source="features.entries_v1", **period))

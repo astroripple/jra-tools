@@ -8,9 +8,13 @@
 - 最上位にsource(featuresのビュー「スキーマ.ビュー名」)がある仕様: 各特徴量のsourceは
   そのビューの列名(省略するとname)。view_digestは学習時のビューの定義のハッシュで、
   読み込むときにDBのビューと照合する(view_dataset)
+
+train_from・train_to(学習期間。初日・最終日を含む)は、学習したモデルの仕様に書く(省略可)。
+推論する日が学習期間に入っていないかを、使う側(batch)が確かめるため。
 """
 
 from dataclasses import dataclass
+from datetime import date
 from enum import StrEnum
 from importlib import resources
 from pathlib import Path
@@ -98,9 +102,21 @@ class FeatureSpec:
     groups: Tuple[FeatureGroup, ...]
     source: Optional[str] = None
     view_digest: Optional[str] = None
+    train_from: Optional[date] = None
+    train_to: Optional[date] = None
 
     def __post_init__(self):
-        """sourceの書式を検証する."""
+        """学習期間・sourceの書式を検証する."""
+        if (self.train_from is None) != (self.train_to is None):
+            raise ValueError("train_fromとtrain_toは両方書いてください")
+        if (
+            self.train_from is not None
+            and self.train_to is not None
+            and self.train_from > self.train_to
+        ):
+            raise ValueError(
+                f"学習期間の初日{self.train_from}が最終日{self.train_to}より後です"
+            )
         if self.source is None:
             if self.view_digest is not None:
                 raise ValueError("view_digestはsource(ビュー)がある仕様にだけ書けます")
@@ -176,7 +192,16 @@ def parse_feature_spec(data: Mapping[str, Any]) -> FeatureSpec:
         ),
         source=data.get("source"),
         view_digest=data.get("view_digest"),
+        train_from=_date(data.get("train_from")),
+        train_to=_date(data.get("train_to")),
     )
+
+
+def _date(value: Any) -> Optional[date]:
+    """YAMLの日付(dateに読まれる)か、YYYY-MM-DDの文字列を日付にする."""
+    if value is None or isinstance(value, date):
+        return value
+    return date.fromisoformat(str(value))
 
 
 def feature_spec_to_dict(spec: FeatureSpec) -> Dict[str, Any]:
@@ -186,6 +211,9 @@ def feature_spec_to_dict(spec: FeatureSpec) -> Dict[str, Any]:
         head["source"] = spec.source
     if spec.view_digest is not None:
         head["view_digest"] = spec.view_digest
+    if spec.train_from is not None:
+        head["train_from"] = spec.train_from
+        head["train_to"] = spec.train_to
     return {
         **head,
         "groups": [
