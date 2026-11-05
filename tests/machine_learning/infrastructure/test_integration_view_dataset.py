@@ -19,6 +19,7 @@ from jra_tools.machine_learning.infrastructure.view_dataset import (
     load_view_dataset,
     load_view_input,
     pin_view_digest,
+    predict_finish_probabilities,
     read_view_frame,
     view_digest,
 )
@@ -282,3 +283,58 @@ def test_label_column_as_feature(engine: Engine, sample_kaisais: List[KaisaiData
 
     with pytest.raises(ValueError, match="ラベルの列は入力に使えません"):
         load_view_input(engine, spec, sample_kaisais[0].ymd)
+
+
+class _FakeModel:
+    """出力の値がレースの位置・枠で決まるモデル. 受け取った入力を残す."""
+
+    def __init__(self):
+        self.x = None
+
+    def predict(self, x, verbose="auto"):
+        self.x = x
+        races, slots = x.shape[0], x.shape[1]
+        base = np.arange(races)[:, None] * 100 + np.arange(slots)[None, :]
+        return {
+            "activation_4": base + 0.1,
+            "activation_5": base + 0.2,
+            "activation_6": base + 0.3,
+        }
+
+
+def test_predict_finish_probabilities(engine: Engine, sample_kaisais: List[KaisaiData]):
+    """出走馬ごとに、その馬のレース・馬番の枠の確率を返す. 入力はload_view_inputと同じ."""
+    spec = pin_view_digest(engine, _view_spec())
+    ymd = sample_kaisais[0].ymd
+    inputs = load_view_input(engine, spec, ymd)
+    model = _FakeModel()
+
+    actual = predict_finish_probabilities(engine, spec, ymd, model)
+
+    assert np.array_equal(model.x, inputs.x)
+    horses = [
+        (h.racehorsekey, race.racekey, h.num)
+        for k in sample_kaisais
+        if k.ymd == ymd
+        for race in k.races
+        for h in race.racehorses
+    ]
+    assert len(actual) == len(horses)
+    racekeys = list(inputs.racekeys)
+    expected = {
+        key: tuple(racekeys.index(racekey) * 100 + num - 1 + d for d in (0.1, 0.2, 0.3))
+        for key, racekey, num in horses
+    }
+    assert {key: probs for key, *probs in actual} == {
+        k: list(v) for k, v in expected.items()
+    }
+    assert all(isinstance(v, float) for row in actual for v in row[1:])
+
+
+def test_predict_finish_probabilities_no_races(engine: Engine):
+    """出走のない日は、モデルを呼ばずに空を返す."""
+    spec = pin_view_digest(engine, _view_spec())
+    model = _FakeModel()
+
+    assert predict_finish_probabilities(engine, spec, 19000101, model) == []
+    assert model.x is None

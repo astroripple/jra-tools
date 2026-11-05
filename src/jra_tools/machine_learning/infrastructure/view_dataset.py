@@ -18,8 +18,9 @@ frame_datasetが行う。
 
 import dataclasses
 from datetime import date
-from typing import List, Optional, Sequence
+from typing import Any, List, Optional, Sequence, Tuple
 
+import numpy as np
 import pandas as pd
 from sqlalchemy import Connection, Engine, text
 
@@ -40,6 +41,8 @@ LABEL_COLUMNS = ("racehorsekey", "finish_order", "win1_num", "win1_ret")
 _LABEL_MARKER = "_label"
 # 既定のラベルのビュー
 DEFAULT_LABELS = "features.labels_v1"
+# モデルの出力のうち、1着・2着・3着の確率(PredictFactoryと同じ)
+PROBABILITY_OUTPUTS = ("activation_4", "activation_5", "activation_6")
 
 # ビューと、依存するビュー・関数を、pg_dependでたどって定義を集める。
 # 表(staging)は名前だけを含める。search_pathはpg_catalogにしてから流す(名前をすべて
@@ -158,6 +161,41 @@ def load_view_input(engine: Engine, spec: FeatureSpec, ymd: int) -> InputDataset
 
     """
     return frame_to_input(read_view_frame(engine, spec, ymd, ymd, labels=None), spec)
+
+
+def predict_finish_probabilities(
+    engine: Engine, spec: FeatureSpec, ymd: int, model: Any
+) -> List[Tuple[str, float, float, float]]:
+    """開催日の出走馬ごとの1着・2着・3着の確率を、ビューの入力からモデルで出す.
+
+    確率だけを素の値で返す(連対率・オッズなどはPostgresのビューで出す)。
+    出走馬の並びは、ビューを読んだ順(開催日・レースキー・馬番)。
+
+    Args:
+        engine (Engine): Postgresのエンジン
+        spec (FeatureSpec): ビューから読む仕様(view_digestがあること)
+        ymd (int): 開催日(YYYYMMDD)
+        model (Any): 推論のモデル。predict(x)が、PROBABILITY_OUTPUTSの各名前に
+            (レース, max_horses)の確率を持つdictを返すこと(Kerasのモデル・TFSMLayer)
+
+    Returns:
+        List[Tuple[str, float, float, float]]: (racehorsekey, 1着, 2着, 3着の確率)。
+            その日に出走がなければ空
+
+    """
+    frame = read_view_frame(engine, spec, ymd, ymd, labels=None)
+    if frame.empty:
+        return []
+    inputs = frame_to_input(frame, spec)
+    preds = model.predict(inputs.x, verbose=0)
+    # 各出走馬の、入力のレースの位置と枠(馬番 - 1)
+    race = pd.Index(inputs.racekeys).get_indexer(frame["racekey"])
+    slot = frame["umaban"].to_numpy(dtype=int) - 1
+    probs = [np.asarray(preds[name])[race, slot] for name in PROBABILITY_OUTPUTS]
+    return [
+        (key, float(p1), float(p2), float(p3))
+        for key, p1, p2, p3 in zip(frame["racehorsekey"], *probs, strict=True)
+    ]
 
 
 def load_view_dataset(

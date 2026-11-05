@@ -71,13 +71,15 @@ groups:
 
 ```python
 from jra_tools.machine_learning.infrastructure.view_dataset import (
-    load_view_dataset, load_view_input, pin_view_digest, read_view_frame,
+    load_view_dataset, load_view_input, pin_view_digest, predict_finish_probabilities,
+    read_view_frame,
 )
 
 spec = pin_view_digest(engine, spec)                 # 学習の前に、今のビューのハッシュを書く
 dataset = load_view_dataset(engine, spec, 20130101, 20191231)  # labels="features.labels_v1"
 save_model_feature_spec(spec, model_dir)             # モデルと一緒に保存する
 inputs = load_view_input(engine, spec, 20261101)    # 推論: その日の入力だけ
+probs = predict_finish_probabilities(engine, spec, 20261101, model)  # [(racehorsekey, 1着, 2着, 3着の確率)]
 frame = read_view_frame(engine, spec, 20250101, 20251231)  # 組み立てる前の1頭1行のDataFrame
 ```
 
@@ -89,4 +91,5 @@ frame = read_view_frame(engine, spec, 20250101, 20251231)  # 組み立てる前�
 - ハッシュは、そのビューと、依存するビュー・関数の定義(Postgresが保存した形)から作る。関係のないビューを足したり変えたりしても変わらない。空白・コメントだけの違いでも変わらない。stagingの表は名前だけを含める。Postgresのメジャーバージョンを上げると変わることがある
 - 関数の中から呼ぶ関数をたどれるのは、`RETURN`で書いたSQLの関数だけ(`AS $$...$$`の本体はPostgresが依存を記録しない)
 - 1回の読み込みは1トランザクションで、先にビューを共有ロックする(読み終わるまで`apply_views`に作り直されない)。学習は1年ずつ読む
+- `predict_finish_probabilities`は確率だけを素の値で返す(連対率・オッズは使う側のビューで出す)。`model.predict(x)`は`activation_4`・`activation_5`・`activation_6`(1・2・3着)の`(レース, 18)`を返すこと(`PredictFactory`と同じ出力)。出走のない日は空
 - 値のない出走(NULL)があれば止める(今の経路の「行がなければエラー」と同じ)。文字列は0にする
