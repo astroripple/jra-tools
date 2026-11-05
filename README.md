@@ -61,6 +61,8 @@ name: resnet4_view
 max_horses: 18
 source: features.entries_v1   # 入力のビュー
 view_digest: 1c445b...         # 学習時のビューの定義のハッシュ(pin_view_digestが書く)
+train_from: 2013-01-01         # 学習期間(初日・最終日を含む。省略可)
+train_to: 2019-12-31
 groups:
   - name: scores
     transform: standardize_per_race
@@ -77,7 +79,8 @@ from jra_tools.machine_learning.infrastructure.view_dataset import (
 
 spec = pin_view_digest(engine, spec)                 # 学習の前に、今のビューのハッシュを書く
 dataset = load_view_dataset(engine, spec, 20130101, 20191231)  # labels="features.labels_v1"
-save_model_feature_spec(spec, model_dir)             # モデルと一緒に保存する
+spec = dataclasses.replace(spec, train_from=date(2013, 1, 1), train_to=date(2019, 12, 31))
+save_model_feature_spec(spec, model_dir)             # モデルと一緒に保存する(学習期間も書く)
 inputs = load_view_input(engine, spec, 20261101)    # 推論: その日の入力だけ
 probs = predict_finish_probabilities(engine, spec, 20261101, model)  # [(racehorsekey, 1着, 2着, 3着の確率)]
 frame = read_view_frame(engine, spec, 20250101, 20251231)  # 組み立てる前の1頭1行のDataFrame
@@ -86,6 +89,7 @@ frame = read_view_frame(engine, spec, 20250101, 20251231)  # 組み立てる前�
 - 読んだ表(1頭1行のpandasのDataFrame)を、`frame_dataset`(`frame_to_dataset`・`frame_to_input`)が仕様に従ってテンソルにする。各レースを1〜18の枠に並べ(空き枠は0)、グループごとにone-hot・レースごとの標準化をしてから、最後に`(レース, 18, 次元)`のndarrayにする
 - 今の経路(`assemble_dataset`)とは、浮動小数点の誤差(1e-15程度)の範囲で一致する。正解ラベル・払戻・並び順は完全に一致する
 
+- 学習期間(`train_from`・`train_to`)は、学習に使った期間をモデルの仕様に残すためのもの。使う側(batch)は、推論する日が学習期間に入っていないかをこれで確かめる
 - 入力のビューの列: `racehorsekey`・`racekey`・`race_date`(date)・`umaban`と仕様の列。ラベルのビューの列: `racehorsekey`・`finish_order`・`win1_num`・`win1_ret`
 - 読むたびに、仕様の列がビューにあるか、ビューの定義のハッシュが`view_digest`と同じかを確かめ、違えば止める。ビューの定義を変えたら(バグ修正でも)、仕様を書き直すか、ビューの版を上げる(`entries_v2`を並べる)
 - ハッシュは、そのビューと、依存するビュー・関数の定義(Postgresが保存した形)から作る。関係のないビューを足したり変えたりしても変わらない。空白・コメントだけの違いでも変わらない。stagingの表は名前だけを含める。Postgresのメジャーバージョンを上げると変わることがある
