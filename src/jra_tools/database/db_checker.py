@@ -27,25 +27,3 @@ def db_days(year):
         ).all()
     return sorted({k.ymd for k in kaisais})
 
-
-def missing_kaisais(year):
-    """指定年の開催(場ごとの開催日)のうち、DBに未登録の(日付, 開催キー)を返す.
-
-    開催はYahoo競馬の年間スケジュール。同じ日のほかの場が登録済みでも、場ごとに未登録を見つける。
-    代替競馬は代替日の行を見る(中止した日の行がDBにあっても、未登録の判定には出ない)。
-    同期の関数なので、イベントループの中からは呼べない。
-    """
-    open_kaisais = asyncio.run(schedule.annual_kaisais(year))
-    return sorted(set(open_kaisais) - set(db_kaisais(year)))
-
-
-def db_kaisais(year):
-    """指定年の開催のうち、DBに登録済みの(日付, 開催キー)を返す."""
-    start_date = int(f"{year}0101")
-    end_date = int(f"{year}1231")
-    app = create_app()
-    with app.app_context():
-        kaisais = KaisaiData.query.filter(
-            KaisaiData.ymd >= start_date, KaisaiData.ymd <= end_date
-        ).all()
-    return sorted({(k.ymd, k.kaisaikey) for k in kaisais})
