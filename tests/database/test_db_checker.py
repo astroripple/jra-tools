@@ -83,4 +83,3 @@ def test_missing_days_is_empty_when_all_days_are_registered(
     )
 
     assert db_checker.missing_days(2025) == []
-

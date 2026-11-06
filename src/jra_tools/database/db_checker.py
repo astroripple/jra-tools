@@ -26,4 +26,3 @@ def db_days(year):
             KaisaiData.ymd >= start_date, KaisaiData.ymd <= end_date
         ).all()
     return sorted({k.ymd for k in kaisais})
-
